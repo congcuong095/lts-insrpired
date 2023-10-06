@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import qs from 'qs';
-import { Table } from 'antd';
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
-import type { FilterValue, SorterResult } from 'antd/es/table/interface';
+import React, { useEffect, useState } from "react";
+import qs from "qs";
+import { Table } from "antd";
+import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
+import type { FilterValue, SorterResult } from "antd/es/table/interface";
 
 interface DataType {
   name: {
@@ -20,29 +20,29 @@ interface TableParams {
   pagination?: TablePaginationConfig;
   sortField?: string;
   sortOrder?: string;
-  filters?: Record<string, FilterValue>;
+  filters?: Record<string, FilterValue | null>;
 }
 
 const columns: ColumnsType<DataType> = [
   {
-    title: 'Name',
-    dataIndex: 'name',
+    title: "Name",
+    dataIndex: "name",
     sorter: true,
     render: (name) => `${name.first} ${name.last}`,
-    width: '20%',
+    width: "20%",
   },
   {
-    title: 'Gender',
-    dataIndex: 'gender',
+    title: "Gender",
+    dataIndex: "gender",
     filters: [
-      { text: 'Male', value: 'male' },
-      { text: 'Female', value: 'female' },
+      { text: "Male", value: "male" },
+      { text: "Female", value: "female" },
     ],
-    width: '20%',
+    width: "20%",
   },
   {
-    title: 'Email',
-    dataIndex: 'email',
+    title: "Email",
+    dataIndex: "email",
   },
 ];
 
@@ -87,8 +87,8 @@ const Table3: React.FC = () => {
 
   const handleTableChange = (
     pagination: TablePaginationConfig,
-    filters: Record<string, FilterValue>,
-    sorter: SorterResult<DataType>,
+    filters: Record<string, FilterValue | null>,
+    sorter: SorterResult<DataType> | SorterResult<DataType>[]
   ) => {
     setTableParams({
       pagination,
@@ -109,7 +109,7 @@ const Table3: React.FC = () => {
       dataSource={data}
       pagination={tableParams.pagination}
       loading={loading}
-      onChange={handleTableChange}
+      onChange={(pagination, filters, sorter) => handleTableChange(pagination, filters, sorter)}
     />
   );
 };

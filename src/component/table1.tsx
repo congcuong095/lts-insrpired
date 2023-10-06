@@ -1,213 +1,121 @@
-"use client"
-import React from 'react';
-import { Segmented, Space, Switch, Table, Typography } from 'antd';
-import type { TableProps } from 'antd';
+"use client";
+import React, { useState } from "react";
+import { Segmented, Space, Switch, Table, Typography } from "antd";
+import type { TablePaginationConfig, TableProps } from "antd";
+import Title from "antd/es/skeleton/Title";
+import dayjs from "dayjs";
+import { FilterValue } from "antd/es/table/interface";
 
 interface RecordType {
-  id: number;
-  firstName: string;
-  lastName: string;
-  age: number;
-  address1: string;
-  address2: string;
-  address3: string;
+  day: string;
+  gross: string;
+  void: string;
+  cancelled: string;
+  net: string;
+}
+interface TableParams {
+  pagination?: TablePaginationConfig;
+  sortField?: string;
+  sortOrder?: string;
+  filters?: Record<string, FilterValue>;
 }
 
-const fixedColumns: TableProps<RecordType>['columns'] = [
+const columns: TableProps<RecordType>["columns"] = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    width: 100,
-    fixed: 'left',
+    title: "Day",
+    dataIndex: "day",
+    width: 40,
+    fixed: "left",
   },
   {
-    title: 'FistName',
-    dataIndex: 'firstName',
-    width: 120,
-    fixed: 'left',
+    title: "Gross",
+    dataIndex: "gross",
+    width: 40,
+    fixed: "left",
   },
   {
-    title: 'LastName',
-    dataIndex: 'lastName',
-    width: 120,
-    fixed: 'left',
+    title: "Void",
+    dataIndex: "void",
+    width: 40,
+    fixed: "left",
   },
   {
-    title: 'Group',
-    width: 120,
-    render: (_, record) => `Group ${Math.floor(record.id / 4)}`,
-    onCell: (record) => ({
-      rowSpan: record.id % 4 === 0 ? 4 : 0,
-    }),
+    title: "Cancelled",
+    dataIndex: "cancelled",
+    width: 40,
+    fixed: "left",
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
-    width: 100,
-    onCell: (record) => ({
-      colSpan: record.id % 4 === 0 ? 2 : 1,
-    }),
-  },
-  {
-    title: 'Address 1',
-    dataIndex: 'address1',
-    onCell: (record) => ({
-      colSpan: record.id % 4 === 0 ? 0 : 1,
-    }),
-  },
-  {
-    title: 'Address 2',
-    dataIndex: 'address2',
-  },
-  {
-    title: 'Address 3',
-    dataIndex: 'address3',
-  },
-  {
-    title: 'Action',
-    width: 150,
-    fixed: 'right',
-    render: () => (
-      <Space>
-        <Typography.Link>Action1</Typography.Link>
-        <Typography.Link>Action2</Typography.Link>
-      </Space>
-    ),
-  },
-];
-
-const columns: TableProps<RecordType>['columns'] = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    width: 100,
-  },
-  {
-    title: 'FistName',
-    dataIndex: 'firstName',
-    width: 120,
-  },
-  {
-    title: 'LastName',
-    dataIndex: 'lastName',
-    width: 120,
+    title: "Net",
+    dataIndex: "net",
+    width: 40,
+    fixed: "left",
   },
 ];
 
 const getData = (count: number) => {
   const data: RecordType[] = new Array(count).fill(null).map((_, index) => ({
-    id: index,
-    firstName: `First_${index.toString(16)}`,
-    lastName: `Last_${index.toString(16)}`,
-    age: 25 + (index % 10),
-    address1: `New York No. ${index} Lake Park`,
-    address2: `London No. ${index} Lake Park`,
-    address3: `Sydney No. ${index} Lake Park`,
+    day: dayjs().format("DD/MM/YYYY"),
+    gross: `$${index.toString(16)}`,
+    void: `$${index.toString(16)}`,
+    cancelled: `$${index.toString(16)}`,
+    net: `$${index.toString(16)}`,
   }));
 
   return data;
 };
 
 const Table1 = () => {
-  const [fixed, setFixed] = React.useState(true);
-  const [bordered, setBordered] = React.useState(true);
-  const [expanded, setExpanded] = React.useState(false);
-  const [empty, setEmpty] = React.useState(false);
-  const [count, setCount] = React.useState(10000);
-
-  const data = React.useMemo(() => getData(count), [count]);
-
-  const mergedColumns = React.useMemo<typeof fixedColumns>(() => {
-    if (!fixed) {
-      return columns;
-    }
-
-    if (!expanded) {
-      return fixedColumns;
-    }
-
-    return fixedColumns.map((col) => ({ ...col, onCell: undefined }));
-  }, [expanded, fixed]);
-
-  const expandableProps = React.useMemo<TableProps<RecordType>['expandable']>(() => {
-    if (!expanded) {
-      return undefined;
-    }
-
-    return {
-      columnWidth: 48,
-      expandedRowRender: (record) => <p style={{ margin: 0 }}>🎉 Expanded {record.address1}</p>,
-      rowExpandable: (record) => record.id % 2 === 0,
-    };
-  }, [expanded]);
+  const data = React.useMemo(() => getData(10000), [10000]);
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
 
   return (
-    <div style={{ padding: 64 }}>
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <Space>
-          <Switch
-            checked={bordered}
-            onChange={() => setBordered(!bordered)}
-            checkedChildren="Bordered"
-            unCheckedChildren="Bordered"
-          />
-          <Switch
-            checked={fixed}
-            onChange={() => setFixed(!fixed)}
-            checkedChildren="Fixed"
-            unCheckedChildren="Fixed"
-          />
-          <Switch
-            checked={expanded}
-            onChange={() => setExpanded(!expanded)}
-            checkedChildren="Expandable"
-            unCheckedChildren="Expandable"
-          />
-          <Switch
-            checked={empty}
-            onChange={() => setEmpty(!empty)}
-            checkedChildren="Empty"
-            unCheckedChildren="Empty"
-          />
-          <Segmented
-            value={count}
-            onChange={(value: number) => setCount(value)}
-            options={[
-              {
-                label: 'None',
-                value: 0,
-              },
-              {
-                label: 'Less',
-                value: 4,
-              },
-              {
-                label: 'Lot',
-                value: 10000,
-              },
-            ]}
-          />
-        </Space>
+    <div style={{ padding: 10 }}>
+      <div style={{ width: "100%" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "0px 25px" }}>
+          <div style={{ fontSize: "20px", fontWeight: "700" }}>Sales Summary</div>
+          <div style={{ fontSize: "15px", fontWeight: "500" }}>
+            from {dayjs().format("DD/MM/YYYY")} to {dayjs().format("DD/MM/YYYY")}
+          </div>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
+          <div style={{ fontSize: "15px", fontWeight: "500" }}>Category Totals</div>
+        </div>
 
         <Table
-          bordered={bordered}
+          bordered={true}
           virtual
-          columns={mergedColumns}
-          scroll={{ x: 2000, y: 400 }}
-          rowKey="id"
-          dataSource={empty ? [] : data}
-          pagination={false}
-          rowSelection={
-            expanded
-              ? undefined
-              : {
-                type: 'radio',
-                columnWidth: 48,
-              }
-          }
-          expandable={expandableProps}
+          columns={columns}
+          scroll={{ x: "auto", y: 400 }}
+          rowKey="gross"
+          dataSource={data}
+          pagination={{
+            ...tableParams.pagination,
+            onChange: (page, pageSize) => {
+              console.log(page, pageSize);
+              setTableParams({ pagination: { current: page, pageSize } });
+            },
+          }}
+          summary={() => (
+            <Table.Summary fixed>
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0}>
+                  <div style={{ fontWeight: 500 }}>Summary</div>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={1}>content</Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>content</Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>content</Table.Summary.Cell>
+                <Table.Summary.Cell index={4}>content</Table.Summary.Cell>
+              </Table.Summary.Row>
+            </Table.Summary>
+          )}
         />
-      </Space>
+      </div>
     </div>
   );
 };
