@@ -67,7 +67,7 @@ export const columns: ColumnsType<DataType> = [
             margin: "-16px",
           }}
         >
-          {category.map((cate: any) => {
+          {category.map((cate: any, indexCate: number) => {
             return (
               <div>
                 {cate?.group.map((group: { name: any }, index: number) => {
@@ -75,7 +75,10 @@ export const columns: ColumnsType<DataType> = [
                     <div
                       style={{
                         ...styleCell,
-                        borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom,
+                        borderBottom:
+                          index === cate.group.length - 1 && indexCate === category.length - 1
+                            ? ""
+                            : styleCell.borderBottom,
                       }}
                     >
                       {group?.name ?? "-"}
