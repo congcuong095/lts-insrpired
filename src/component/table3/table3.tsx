@@ -3,18 +3,9 @@ import qs from "qs";
 import { Table } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import type { FilterValue, SorterResult } from "antd/es/table/interface";
-
-interface DataType {
-  name: {
-    first: string;
-    last: string;
-  };
-  gender: string;
-  email: string;
-  login: {
-    uuid: string;
-  };
-}
+import { DataType, columns } from "./columns";
+import axios from "axios";
+import { fakeData } from "./data";
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -22,29 +13,6 @@ interface TableParams {
   sortOrder?: string;
   filters?: Record<string, FilterValue | null>;
 }
-
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    sorter: true,
-    render: (name) => `${name.first} ${name.last}`,
-    width: "20%",
-  },
-  {
-    title: "Gender",
-    dataIndex: "gender",
-    filters: [
-      { text: "Male", value: "male" },
-      { text: "Female", value: "female" },
-    ],
-    width: "20%",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-  },
-];
 
 const getRandomuserParams = (params: TableParams) => ({
   results: params.pagination?.pageSize,
@@ -64,9 +32,11 @@ const Table3: React.FC = () => {
 
   const fetchData = () => {
     setLoading(true);
-    fetch(`https://randomuser.me/api?${qs.stringify(getRandomuserParams(tableParams))}`)
-      .then((res) => res.json())
-      .then(({ results }) => {
+    axios(`https://randomuser.me/api?${qs.stringify(getRandomuserParams(tableParams))}`)
+      .then((res) => {
+        return fakeData(10);
+      })
+      .then((results) => {
         setData(results);
         setLoading(false);
         setTableParams({
@@ -74,8 +44,6 @@ const Table3: React.FC = () => {
           pagination: {
             ...tableParams.pagination,
             total: 200,
-            // 200 is mock data, you should read it from server
-            // total: data.totalCount,
           },
         });
       });
@@ -105,8 +73,8 @@ const Table3: React.FC = () => {
   return (
     <Table
       columns={columns}
-      rowKey={(record) => record.login.uuid}
       dataSource={data}
+      bordered
       pagination={tableParams.pagination}
       loading={loading}
       onChange={(pagination, filters, sorter) => handleTableChange(pagination, filters, sorter)}

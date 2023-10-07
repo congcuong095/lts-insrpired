@@ -3,7 +3,7 @@ import React from "react";
 import { Tabs } from "antd";
 import Table1 from "../component/table1";
 import Table2 from "../component/table2";
-import Table3 from "../component/table3";
+import Table3 from "./table3/table3";
 
 const onChange = (key: string) => {
   console.log(key);
