@@ -10,14 +10,14 @@ export const fakeData = (count: number) => {
           {
             name: "drawGame",
             gross: "100",
-            void: undefined,
+
             cancelled: "6",
             net: "94",
           },
           {
             name: "Fixed Odd",
             gross: "100",
-            void: undefined,
+
             cancelled: "6",
             net: "94",
           },
@@ -29,14 +29,14 @@ export const fakeData = (count: number) => {
           {
             name: "drawGame",
             gross: "100",
-            void: undefined,
+
             cancelled: "6",
             net: "94",
           },
           {
             name: "Fixed Odd",
             gross: "100",
-            void: undefined,
+
             cancelled: "6",
             net: "94",
           },
@@ -45,7 +45,7 @@ export const fakeData = (count: number) => {
     ],
   };
   const result = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < count; i++) {
     result.push({ ...singleData, date: dayjs().add(i, "day").format("DD/MM/YYYY") });
   }
   return result;
