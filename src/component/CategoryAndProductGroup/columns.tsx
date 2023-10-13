@@ -25,6 +25,7 @@ const styleCell: CSSProperties = {
   position: "relative",
   padding: "16px",
   overflowWrap: "break-word",
+  height: "100%",
 };
 
 export const columns: ColumnsType<ICatagoryProduct> = [
@@ -42,6 +43,10 @@ export const columns: ColumnsType<ICatagoryProduct> = [
         <div
           style={{
             margin: "-16px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+            height: "inherit",
           }}
         >
           {category.map((cate, index: number) => {

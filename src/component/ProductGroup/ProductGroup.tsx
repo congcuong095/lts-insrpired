@@ -20,7 +20,7 @@ const getRandomuserParams = (params: TableParams) => ({
   ...params,
 });
 
-const CategoryAndProduct: React.FC = () => {
+const ProductGroup: React.FC = () => {
   const [data, setData] = useState<ICatagoryProduct[]>();
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -58,7 +58,6 @@ const CategoryAndProduct: React.FC = () => {
     filters: Record<string, FilterValue | null>,
     sorter: SorterResult<ICatagoryProduct> | SorterResult<ICatagoryProduct>[]
   ) => {
-    console.log(pagination);
     setTableParams({
       pagination,
       filters,
@@ -86,13 +85,11 @@ const CategoryAndProduct: React.FC = () => {
         let sumCancelled = 0;
         let sumNet = 0;
         data.forEach((item) => {
-          item.category?.forEach((cate) => {
-            cate?.group?.forEach((gr) => {
-              sumGross += Number(gr?.gross ?? 0);
-              sumVoid += Number(gr?.void ?? 0);
-              sumCancelled += Number(gr?.cancelled ?? 0);
-              sumNet += Number(gr?.net ?? 0);
-            });
+          item.group?.forEach((gr) => {
+            sumGross += Number(gr?.gross ?? 0);
+            sumVoid += Number(gr?.void ?? 0);
+            sumCancelled += Number(gr?.cancelled ?? 0);
+            sumNet += Number(gr?.net ?? 0);
           });
         });
         return (
@@ -102,11 +99,10 @@ const CategoryAndProduct: React.FC = () => {
                 <div style={{ fontWeight: 600 }}>Summary</div>
               </Table.Summary.Cell>
               <Table.Summary.Cell index={1}></Table.Summary.Cell>
-              <Table.Summary.Cell index={2}></Table.Summary.Cell>
-              <Table.Summary.Cell index={3}>{sumGross ? sumGross : "-"}</Table.Summary.Cell>
-              <Table.Summary.Cell index={4}>{sumVoid ? sumVoid : "-"}</Table.Summary.Cell>
-              <Table.Summary.Cell index={5}>{sumCancelled ? sumCancelled : "-"}</Table.Summary.Cell>
-              <Table.Summary.Cell index={6}>{sumNet ? sumNet : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={2}>{sumGross ? sumGross : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={3}>{sumVoid ? sumVoid : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={4}>{sumCancelled ? sumCancelled : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={5}>{sumNet ? sumNet : "-"}</Table.Summary.Cell>
             </Table.Summary.Row>
           </Table.Summary>
         );
@@ -115,4 +111,4 @@ const CategoryAndProduct: React.FC = () => {
   );
 };
 
-export default CategoryAndProduct;
+export default ProductGroup;
