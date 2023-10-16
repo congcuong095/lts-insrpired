@@ -1,108 +1,53 @@
 import React, { useEffect, useState } from "react";
-import qs from "qs";
 import { Table } from "antd";
-import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
-import type { FilterValue, SorterResult } from "antd/es/table/interface";
-import { ICatagoryProduct, columns } from "./columns";
-import axios from "axios";
-import { fakeData } from "./data";
+import { columns } from "./columns";
+import { ParamReportProps } from "../Report";
+import { getProductGroup } from "@/services/report";
+import { ResponeProductGroup } from "@/services/type";
 
-interface TableParams {
-  pagination?: TablePaginationConfig;
-  sortField?: string;
-  sortOrder?: string;
-  filters?: Record<string, FilterValue | null>;
-}
-
-const getRandomuserParams = (params: TableParams) => ({
-  results: params.pagination?.pageSize,
-  page: params.pagination?.current,
-  ...params,
-});
-
-const ProductGroup: React.FC = () => {
-  const [data, setData] = useState<ICatagoryProduct[]>();
+const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
+  const [data, setData] = useState<ResponeProductGroup | undefined>();
   const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
 
-  const fetchData = () => {
+  const getData = async () => {
     setLoading(true);
-    axios(`https://randomuser.me/api?${qs.stringify(getRandomuserParams(tableParams))}`)
-      .then((res) => {
-        return fakeData(5);
-      })
-      .then((results) => {
-        setData(results);
-        setLoading(false);
-        setTableParams({
-          ...tableParams,
-          pagination: {
-            ...tableParams.pagination,
-            total: 200,
-          },
-        });
-      });
+    try {
+      const res = await getProductGroup(params);
+      if (res?.data) {
+        setData(res?.data);
+      }
+    } catch (error) {
+      alert(error);
+      setLoading(false);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [JSON.stringify(tableParams)]);
-
-  const handleTableChange = (
-    pagination: TablePaginationConfig,
-    filters: Record<string, FilterValue | null>,
-    sorter: SorterResult<ICatagoryProduct> | SorterResult<ICatagoryProduct>[]
-  ) => {
-    setTableParams({
-      pagination,
-      filters,
-      ...sorter,
-    });
-
-    // `dataSource` is useless since `pageSize` changed
-    if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-      setData([]);
-    }
-  };
+    getData();
+  }, [params]);
 
   return (
     <Table
-      rowKey={"date"}
+      rowKey={"processing_date"}
       columns={columns}
-      dataSource={data}
+      dataSource={data?.sales_by_productgroup}
       bordered
-      pagination={tableParams.pagination}
+      pagination={false}
       loading={loading}
-      onChange={(pagination, filters, sorter) => handleTableChange(pagination, filters, sorter)}
-      summary={(data) => {
-        let sumGross = 0;
-        let sumVoid = 0;
-        let sumCancelled = 0;
-        let sumNet = 0;
-        data.forEach((item) => {
-          item.group?.forEach((gr) => {
-            sumGross += Number(gr?.gross ?? 0);
-            sumVoid += Number(gr?.void ?? 0);
-            sumCancelled += Number(gr?.cancelled ?? 0);
-            sumNet += Number(gr?.net ?? 0);
-          });
-        });
+      summary={() => {
         return (
           <Table.Summary fixed>
             <Table.Summary.Row>
               <Table.Summary.Cell index={0}>
-                <div style={{ fontWeight: 600 }}>Summary</div>
+                <div style={{ fontWeight: 600 }}>Total</div>
               </Table.Summary.Cell>
               <Table.Summary.Cell index={1}></Table.Summary.Cell>
-              <Table.Summary.Cell index={2}>{sumGross ? sumGross : "-"}</Table.Summary.Cell>
-              <Table.Summary.Cell index={3}>{sumVoid ? sumVoid : "-"}</Table.Summary.Cell>
-              <Table.Summary.Cell index={4}>{sumCancelled ? sumCancelled : "-"}</Table.Summary.Cell>
-              <Table.Summary.Cell index={5}>{sumNet ? sumNet : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={2}>{data?.total_gross ? data?.total_gross : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={3}>{data?.total_void ? data?.total_void : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={4}>{data?.total_cancelled ? data?.total_cancelled : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={5}>{data?.total_net ? data?.total_net : "-"}</Table.Summary.Cell>
+              <Table.Summary.Cell index={6}></Table.Summary.Cell>
             </Table.Summary.Row>
           </Table.Summary>
         );

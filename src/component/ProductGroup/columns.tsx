@@ -1,18 +1,6 @@
+import { SalesByProductGroup, SalesByProductGroupItem } from "@/services/type";
 import { ColumnsType } from "antd/es/table";
 import { CSSProperties } from "react";
-
-export interface ICatagoryProduct {
-  date?: string;
-  group?: IGroup[];
-}
-
-export interface IGroup {
-  name?: string;
-  gross?: string;
-  void?: string;
-  cancelled?: string;
-  net?: string;
-}
 
 const styleCell: CSSProperties = {
   borderBottom: "1px solid #f0f0f0",
@@ -22,18 +10,16 @@ const styleCell: CSSProperties = {
   overflowWrap: "break-word",
 };
 
-export const columns: ColumnsType<ICatagoryProduct> = [
+export const columns: ColumnsType<SalesByProductGroup> = [
   {
     title: "Date",
-    dataIndex: "date",
+    dataIndex: "processing_date",
     render: (date) => date,
-    sorter: true,
   },
   {
     title: "Group",
-    dataIndex: "group",
-
-    render: (group: IGroup[]) => {
+    dataIndex: "product_groups",
+    render: (group: SalesByProductGroupItem[]) => {
       return (
         <div
           style={{
@@ -56,9 +42,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Gross",
-    dataIndex: "group",
+    dataIndex: "product_groups",
 
-    render: (group: IGroup[]) => {
+    render: (group: SalesByProductGroupItem[]) => {
       return (
         <div
           style={{
@@ -81,9 +67,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Void",
-    dataIndex: "group",
+    dataIndex: "product_groups",
 
-    render: (group: IGroup[]) => {
+    render: (group: SalesByProductGroupItem[]) => {
       return (
         <div
           style={{
@@ -106,9 +92,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Cancelled",
-    dataIndex: "group",
+    dataIndex: "product_groups",
 
-    render: (group: IGroup[]) => {
+    render: (group: SalesByProductGroupItem[]) => {
       return (
         <div
           style={{
@@ -131,9 +117,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Net",
-    dataIndex: "group",
+    dataIndex: "product_groups",
 
-    render: (group: IGroup[]) => {
+    render: (group: SalesByProductGroupItem[]) => {
       return (
         <div
           style={{
@@ -156,13 +142,7 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Daily Net",
-    dataIndex: "group",
-    render: (group: IGroup[]) => {
-      const dailyNet = group.reduce((totalDaily, gr) => {
-        if (gr?.net) return totalDaily + Number(gr?.net ?? 0);
-        return totalDaily;
-      }, 0);
-      return <div>{dailyNet ?? "-"}</div>;
-    },
+    dataIndex: "daily_net",
+    render: (net) => net,
   },
 ];

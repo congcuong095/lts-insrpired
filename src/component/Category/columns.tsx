@@ -1,18 +1,6 @@
+import { SalesByCategory, SalesByCategoryItem } from "@/services/type";
 import { ColumnsType } from "antd/es/table";
 import { CSSProperties } from "react";
-
-export interface ICatagoryProduct {
-  date?: string;
-  category?: ICategory[];
-}
-
-export interface ICategory {
-  name?: string;
-  gross?: string;
-  void?: string;
-  cancelled?: string;
-  net?: string;
-}
 
 const styleCell: CSSProperties = {
   borderBottom: "1px solid #f0f0f0",
@@ -22,17 +10,17 @@ const styleCell: CSSProperties = {
   overflowWrap: "break-word",
 };
 
-export const columns: ColumnsType<ICatagoryProduct> = [
+export const columns: ColumnsType<SalesByCategory> = [
   {
     title: "Date",
-    dataIndex: "date",
+    dataIndex: "processing_date",
     render: (date) => date,
   },
   {
     title: "Category",
-    dataIndex: "category",
+    dataIndex: "categories",
 
-    render: (category: ICategory[]) => {
+    render: (category: SalesByCategoryItem[]) => {
       return (
         <div
           style={{
@@ -55,9 +43,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Gross",
-    dataIndex: "category",
+    dataIndex: "categories",
 
-    render: (category: ICategory[]) => {
+    render: (category: SalesByCategoryItem[]) => {
       return (
         <div
           style={{
@@ -80,9 +68,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Void",
-    dataIndex: "category",
+    dataIndex: "categories",
 
-    render: (category: ICategory[]) => {
+    render: (category: SalesByCategoryItem[]) => {
       return (
         <div
           style={{
@@ -105,9 +93,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Cancelled",
-    dataIndex: "category",
+    dataIndex: "categories",
 
-    render: (category: ICategory[]) => {
+    render: (category: SalesByCategoryItem[]) => {
       return (
         <div
           style={{
@@ -130,9 +118,9 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Net",
-    dataIndex: "category",
+    dataIndex: "categories",
 
-    render: (category: ICategory[]) => {
+    render: (category: SalesByCategoryItem[]) => {
       return (
         <div
           style={{
@@ -155,13 +143,7 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Daily Net",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
-      const dailyNet = category.reduce((totalDaily, cate) => {
-        if (cate?.net) return totalDaily + Number(cate?.net ?? 0);
-        return totalDaily;
-      }, 0);
-      return <div>{dailyNet ?? "-"}</div>;
-    },
+    dataIndex: "daily_net",
+    render: (net) => net,
   },
 ];

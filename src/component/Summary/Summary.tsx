@@ -1,25 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Table, TablePaginationConfig } from "antd";
 import { columns } from "./columns";
-import axios from "axios";
-import { fakeData } from "./data";
-import dayjs from "dayjs";
 import { ResponeSummary } from "@/services/type";
+import { getSummary } from "@/services/report";
+import { ParamReportProps } from "../Report";
 
-interface SummaryProps {
-  data?: ResponeSummary[];
-}
+const Summary: React.FC<ParamReportProps> = ({ params }) => {
+  const [data, setData] = useState<ResponeSummary[] | undefined>();
+  const [loading, setLoading] = useState(false);
+  const [paging, setPaging] = useState<TablePaginationConfig>({
+    current: 1,
+    pageSize: 10,
+    pageSizeOptions: [10, 20, 50],
+    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+    total: data?.length,
+    showSizeChanger: true,
+  });
 
-const Summary: React.FC<SummaryProps> = ({ data }) => {
+  const getData = async () => {
+    setLoading(true);
+    try {
+      const res = await getSummary(params);
+      if (res?.data) {
+        setData(res?.data);
+      }
+    } catch (error) {
+      alert(error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getData();
+  }, [params]);
+
+  console.log(paging);
+
   return (
     <>
       <Table
         rowKey={"id"}
         columns={columns}
-        dataSource={fakeData(10)}
+        dataSource={data}
         bordered
-        pagination={false}
-        loading={!data ? true : false}
+        pagination={paging}
+        onChange={(pagination) => {
+          setPaging({
+            ...pagination,
+          });
+        }}
+        loading={loading}
         summary={(data) => {
           let sumGross = 0;
           let sumVoid = 0;
@@ -35,7 +65,7 @@ const Summary: React.FC<SummaryProps> = ({ data }) => {
             <Table.Summary fixed>
               <Table.Summary.Row>
                 <Table.Summary.Cell index={0}>
-                  <div style={{ fontWeight: 600 }}>Summary</div>
+                  <div style={{ fontWeight: 600 }}>Total</div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={2}>{sumGross ? sumGross : "-"}</Table.Summary.Cell>
                 <Table.Summary.Cell index={3}>{sumVoid ? sumVoid : "-"}</Table.Summary.Cell>

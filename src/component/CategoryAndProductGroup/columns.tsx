@@ -1,23 +1,6 @@
+import { CategoryAndProductGroupItemCategory, SalesByCategoryAndProductGroup } from "@/services/type";
 import { ColumnsType } from "antd/es/table";
 import { CSSProperties } from "react";
-
-export interface ICatagoryProduct {
-  date?: string;
-  category?: ICategory[];
-}
-
-export interface ICategory {
-  name?: string;
-  group?: IGroup[];
-}
-
-export interface IGroup {
-  name?: string;
-  gross?: string;
-  void?: string;
-  cancelled?: string;
-  net?: string;
-}
 
 const styleCell: CSSProperties = {
   borderBottom: "1px solid #f0f0f0",
@@ -26,19 +9,22 @@ const styleCell: CSSProperties = {
   padding: "16px",
   overflowWrap: "break-word",
   height: "100%",
+  boxSizing: "border-box",
+  display: "flex",
+  alignItems: "center",
 };
 
-export const columns: ColumnsType<ICatagoryProduct> = [
+export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
   {
     title: "Date",
-    dataIndex: "date",
+    dataIndex: "processing_date",
     render: (date) => date,
   },
   {
     title: "Category",
-    dataIndex: "category",
+    dataIndex: "categories",
 
-    render: (category: ICategory[]) => {
+    render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (
         <div
           style={{
@@ -53,7 +39,11 @@ export const columns: ColumnsType<ICatagoryProduct> = [
             return (
               <div
                 key={index}
-                style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
+                style={{
+                  ...styleCell,
+                  borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom,
+                  height: `${cate?.product_groups?.length ? `${cate?.product_groups?.length * 55}px` : "100%"}`,
+                }}
               >
                 {cate?.name ?? "-"}
               </div>
@@ -65,8 +55,8 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Group",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
+    dataIndex: "categories",
+    render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (
         <div
           style={{
@@ -76,21 +66,25 @@ export const columns: ColumnsType<ICatagoryProduct> = [
           {category.map((cate, indexCate: number) => {
             return (
               <div key={indexCate}>
-                {cate?.group &&
-                  cate?.group.map((group, index: number) => {
+                {cate?.product_groups &&
+                  cate?.product_groups.map((group, index: number) => {
                     return (
-                      <div
-                        key={index}
-                        style={{
-                          ...styleCell,
-                          borderBottom:
-                            cate?.group && index === cate?.group?.length - 1 && indexCate === category.length - 1
-                              ? ""
-                              : styleCell.borderBottom,
-                        }}
-                      >
-                        {group?.name ?? "-"}
-                      </div>
+                      <>
+                        <div
+                          key={index}
+                          style={{
+                            ...styleCell,
+                            borderBottom:
+                              cate?.product_groups &&
+                              index === cate?.product_groups?.length - 1 &&
+                              indexCate === category.length - 1
+                                ? ""
+                                : styleCell.borderBottom,
+                          }}
+                        >
+                          {group?.name ?? "-"}
+                        </div>
+                      </>
                     );
                   })}
               </div>
@@ -102,8 +96,8 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Gross",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
+    dataIndex: "categories",
+    render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (
         <div
           style={{
@@ -113,20 +107,22 @@ export const columns: ColumnsType<ICatagoryProduct> = [
           {category.map((cate, indexCate: number) => {
             return (
               <div key={indexCate}>
-                {cate?.group &&
-                  cate?.group.map((group, index: number) => {
+                {cate?.product_groups &&
+                  cate?.product_groups.map((product_groups, index: number) => {
                     return (
                       <div
                         key={index}
                         style={{
                           ...styleCell,
                           borderBottom:
-                            cate?.group && index === cate?.group?.length - 1 && indexCate === category.length - 1
+                            cate?.product_groups &&
+                            index === cate?.product_groups?.length - 1 &&
+                            indexCate === category.length - 1
                               ? ""
                               : styleCell.borderBottom,
                         }}
                       >
-                        {group?.gross ?? "-"}
+                        {product_groups?.gross ?? "-"}
                       </div>
                     );
                   })}
@@ -139,8 +135,8 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Void",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
+    dataIndex: "categories",
+    render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (
         <div
           style={{
@@ -150,20 +146,22 @@ export const columns: ColumnsType<ICatagoryProduct> = [
           {category.map((cate, indexCate: number) => {
             return (
               <div key={indexCate}>
-                {cate?.group &&
-                  cate?.group.map((group, index: number) => {
+                {cate?.product_groups &&
+                  cate?.product_groups.map((product_groups, index: number) => {
                     return (
                       <div
                         key={index}
                         style={{
                           ...styleCell,
                           borderBottom:
-                            cate?.group && index === cate?.group?.length - 1 && indexCate === category.length - 1
+                            cate?.product_groups &&
+                            index === cate?.product_groups?.length - 1 &&
+                            indexCate === category.length - 1
                               ? ""
                               : styleCell.borderBottom,
                         }}
                       >
-                        {group?.void ?? "-"}
+                        {product_groups?.void ?? "-"}
                       </div>
                     );
                   })}
@@ -176,8 +174,8 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Cancelled",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
+    dataIndex: "categories",
+    render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (
         <div
           style={{
@@ -187,20 +185,22 @@ export const columns: ColumnsType<ICatagoryProduct> = [
           {category.map((cate, indexCate: number) => {
             return (
               <div key={indexCate}>
-                {cate?.group &&
-                  cate?.group.map((group, index: number) => {
+                {cate?.product_groups &&
+                  cate?.product_groups.map((product_groups, index: number) => {
                     return (
                       <div
                         key={index}
                         style={{
                           ...styleCell,
                           borderBottom:
-                            cate?.group && index === cate?.group?.length - 1 && indexCate === category.length - 1
+                            cate?.product_groups &&
+                            index === cate?.product_groups?.length - 1 &&
+                            indexCate === category.length - 1
                               ? ""
                               : styleCell.borderBottom,
                         }}
                       >
-                        {group?.cancelled ?? "-"}
+                        {product_groups?.cancelled ?? "-"}
                       </div>
                     );
                   })}
@@ -213,8 +213,8 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Net",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
+    dataIndex: "categories",
+    render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (
         <div
           style={{
@@ -224,20 +224,22 @@ export const columns: ColumnsType<ICatagoryProduct> = [
           {category.map((cate, indexCate: number) => {
             return (
               <div key={indexCate}>
-                {cate?.group &&
-                  cate?.group.map((group, index: number) => {
+                {cate?.product_groups &&
+                  cate?.product_groups.map((product_groups, index: number) => {
                     return (
                       <div
                         key={index}
                         style={{
                           ...styleCell,
                           borderBottom:
-                            cate?.group && index === cate?.group?.length - 1 && indexCate === category.length - 1
+                            cate?.product_groups &&
+                            index === cate?.product_groups?.length - 1 &&
+                            indexCate === category.length - 1
                               ? ""
                               : styleCell.borderBottom,
                         }}
                       >
-                        {group?.net ?? "-"}
+                        {product_groups?.net ?? "-"}
                       </div>
                     );
                   })}
@@ -250,8 +252,8 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Category Net",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
+    dataIndex: "categories",
+    render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (
         <div
           style={{
@@ -259,15 +261,12 @@ export const columns: ColumnsType<ICatagoryProduct> = [
           }}
         >
           {category.map((cate, indexCate: number) => {
-            const categoryNet = cate?.group?.reduce((total, group) => {
-              return total + Number(group?.net);
-            }, 0);
             return (
               <div
                 key={indexCate}
                 style={{ ...styleCell, borderBottom: indexCate === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {categoryNet ?? "-"}
+                {cate?.category_net ?? "-"}
               </div>
             );
           })}
@@ -277,21 +276,7 @@ export const columns: ColumnsType<ICatagoryProduct> = [
   },
   {
     title: "Daily Net",
-    dataIndex: "category",
-    render: (category: ICategory[]) => {
-      const dailyNet = category.reduce((totalDaily, cate) => {
-        if (cate?.group) {
-          return (
-            totalDaily +
-            cate?.group?.reduce((totalGroup, group) => {
-              return totalGroup + Number(group?.net);
-            }, 0)
-          );
-        } else {
-          return totalDaily;
-        }
-      }, 0);
-      return <div>{dailyNet ?? "-"}</div>;
-    },
+    dataIndex: "daily_net",
+    render: (daily_net) => daily_net,
   },
 ];
