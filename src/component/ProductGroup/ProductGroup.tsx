@@ -48,7 +48,8 @@ const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
 
   return (
     <Card>
-      <Space style={{ marginBottom: 16, display: "flex", justifyContent: "flex-end" }}>
+      <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
+        <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales By Product Group</div>
         <Button type="primary" icon={<DownloadOutlined />} onClick={() => handlePrint()}>
           Download PDF
         </Button>

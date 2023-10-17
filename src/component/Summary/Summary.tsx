@@ -57,7 +57,8 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
 
   return (
     <Card>
-      <Space style={{ marginBottom: 16, display: "flex", justifyContent: "flex-end" }}>
+      <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
+        <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales Summary</div>
         <Button type="primary" icon={<DownloadOutlined />} onClick={generatePDF}>
           Download PDF
         </Button>
