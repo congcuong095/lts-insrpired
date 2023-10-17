@@ -1,7 +1,7 @@
-import { ResponeSummary } from "@/services/type";
+import { ResponeSummary, SalesSummary } from "@/services/type";
 import { ColumnsType } from "antd/es/table";
 
-export const columns: ColumnsType<ResponeSummary> = [
+export const columns: ColumnsType<SalesSummary> = [
   {
     title: "Date",
     dataIndex: "processing_date",

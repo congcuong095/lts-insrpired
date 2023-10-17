@@ -7,9 +7,9 @@ import {
   ResponeSummary,
 } from "./type";
 
-const url = "http://10.10.31.78:3000/v1/reports";
+const url = "https://6b7b-118-70-127-173.ngrok.io/v1/reports";
 
-export const getSummary = async (params?: IParamsReport): Promise<AxiosResponse<ResponeSummary[]>> => {
+export const getSummary = async (params?: IParamsReport): Promise<AxiosResponse<ResponeSummary>> => {
   return await axios({
     method: "get",
     url: url + "/sales-summary",

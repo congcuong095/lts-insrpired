@@ -6,6 +6,14 @@ export interface IParamsReport {
 }
 
 export interface ResponeSummary {
+  sales_summary?: SalesSummary[];
+  total_gross?: number;
+  total_void?: number;
+  total_cancelled?: number;
+  total_net?: number;
+}
+
+export interface SalesSummary {
   id?: number;
   processing_date?: string;
   gross?: number;
