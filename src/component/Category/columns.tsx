@@ -58,7 +58,7 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.gross ?? "-"}
+                {cate?.gross ? cate?.gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
               </div>
             );
           })}
@@ -83,7 +83,7 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.void ?? "-"}
+                {cate?.void ? cate?.void.toLocaleString("en-US", { style: "decimal" }) : "-"}
               </div>
             );
           })}
@@ -108,7 +108,7 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.cancelled ?? "-"}
+                {cate?.cancelled ? cate?.cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
               </div>
             );
           })}
@@ -133,7 +133,7 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.net ?? "-"}
+                {cate?.net ? cate?.net.toLocaleString("en-US", { style: "decimal" }) : "-"}
               </div>
             );
           })}
@@ -144,6 +144,6 @@ export const columns: ColumnsType<SalesByCategory> = [
   {
     title: "Daily Net",
     dataIndex: "daily_net",
-    render: (net) => net,
+    render: (net) => (net ? net.toLocaleString("en-US", { style: "decimal" }) : "-"),
   },
 ];

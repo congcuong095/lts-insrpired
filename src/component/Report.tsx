@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Card, DatePicker, DatePickerProps, Select, Space, Tabs } from "antd";
+import { Button, Card, DatePicker, DatePickerProps, Divider, Select, Space, Tabs } from "antd";
 import CategoryAndProduct from "./CategoryAndProductGroup/CategoryAndProductGroup";
 import Summary from "./Summary/Summary";
 import Category from "./Category/Category";
@@ -83,69 +83,75 @@ const Report: React.FC = () => {
       <Card
         style={{
           marginBottom: "20px",
-          width: "800px",
+          // width: "800px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
+        <Space
+          size={[16, 32]}
+          wrap
+          split={<Divider type="vertical" />}
+          align={"center"}
+          style={{ marginBottom: "20px" }}
         >
           <div
             style={{
-              width: "200px",
-              overflow: "hidden",
-              fontWeight: "600",
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            Select table:
+            <div
+              style={{
+                width: "100px",
+                overflow: "hidden",
+                fontWeight: "600",
+              }}
+            >
+              Select table:
+            </div>
+            <Select
+              value={formSearch?.table}
+              style={{ width: 400 }}
+              onChange={(value) => {
+                setFormSearch({
+                  table: value,
+                  date: {
+                    from_date: "01-" + dayjs().format("MM-YYYY"),
+                    to_date: dayjs().format("DD-MM-YYYY"),
+                  },
+                });
+              }}
+              options={[
+                { value: "summary", label: "Sales Summary" },
+                { value: "category", label: "Sales By Category " },
+                { value: "productGroup", label: "Sales By Product Group" },
+                { value: "categoryProductGroup", label: "Sales By Category by Product Group" },
+              ]}
+            />
           </div>
-          <Select
-            value={formSearch?.table}
-            style={{ width: 400 }}
-            onChange={(value) => {
-              setFormSearch({
-                table: value,
-                date: {
-                  from_date: "01-" + dayjs().format("MM-YYYY"),
-                  to_date: dayjs().format("DD-MM-YYYY"),
-                },
-              });
-            }}
-            options={[
-              { value: "summary", label: "Sales Summary" },
-              { value: "category", label: "Sales By Category " },
-              { value: "productGroup", label: "Sales By Product Group" },
-              { value: "categoryProductGroup", label: "Sales By Category by Product Group" },
-            ]}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
           <div
             style={{
-              width: "200px",
-              overflow: "hidden",
-              fontWeight: "600",
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            Date:
+            <div
+              style={{
+                width: "100px",
+                overflow: "hidden",
+                fontWeight: "600",
+              }}
+            >
+              Date:
+            </div>
+            <RangePicker
+              style={{ width: 400 }}
+              format={"DD-MM-YYYY"}
+              value={[dayjs(formSearch.date?.from_date, "DD-MM-YYYY"), dayjs(formSearch.date?.to_date, "DD-MM-YYYY")]}
+              onChange={(_, dateString) => onFilterDate(dateString)}
+            />
           </div>
-          <RangePicker
-            style={{ width: 400 }}
-            format={"DD-MM-YYYY"}
-            value={[dayjs(formSearch.date?.from_date, "DD-MM-YYYY"), dayjs(formSearch.date?.to_date, "DD-MM-YYYY")]}
-            onChange={(_, dateString) => onFilterDate(dateString)}
-          />
-        </div>
-        {/* <div
+
+          {/* <div
           style={{
             display: "flex",
             alignItems: "center",
@@ -161,12 +167,13 @@ const Report: React.FC = () => {
           >
             Filter By Category:
           </div>
-          <Select defaultValue="supermaket" style={{ width: 400 }} onChange={onFilterCategory}>
+          <Select defaultValue="supermaket" style={{ width: 400 }} >
             <Select.Option value={"supermaket"}>Supermaket</Select.Option>
             <Select.Option value={"drugStore"}>Drug Store</Select.Option>
             <Select.Option value={"internet"}>Internet</Select.Option>
           </Select>
         </div> */}
+        </Space>
         <div
           style={{
             display: "flex",

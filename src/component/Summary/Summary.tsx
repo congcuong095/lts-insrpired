@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Table, TablePaginationConfig } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Card, Space, Table, TablePaginationConfig, notification } from "antd";
 import { columns } from "./columns";
 import { ResponeSummary } from "@/services/type";
 import { getSummary } from "@/services/report";
 import { ParamReportProps } from "../Report";
+import axios, { AxiosError } from "axios";
+import { DownloadOutlined } from "@ant-design/icons";
+import { openPrintPdf } from "@/utils/pdf";
+import { useReactToPrint } from "react-to-print";
 
 const Summary: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeSummary[] | undefined>();
@@ -17,6 +21,8 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
     showSizeChanger: true,
   });
 
+  const [errorMessage, contextHolder] = notification.useNotification();
+
   const getData = async () => {
     setLoading(true);
     try {
@@ -25,20 +31,40 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
         setData(res?.data);
       }
     } catch (error) {
-      alert(error);
+      const err = error as AxiosError;
+      errorMessage.error({
+        message: err?.message,
+      });
     }
     setLoading(false);
   };
+
+  const handlePrint = async () => {
+    const res = await axios("");
+    openPrintPdf(res?.data.data);
+  };
+
+  const generatePDF = useReactToPrint({
+    content: () => tableRef.current,
+    documentTitle: "Sales by summary",
+  });
+
+  const tableRef = useRef(null);
 
   useEffect(() => {
     getData();
   }, [params]);
 
-  console.log(paging);
-
   return (
-    <>
+    <Card>
+      <Space style={{ marginBottom: 16, display: "flex", justifyContent: "flex-end" }}>
+        <Button type="primary" icon={<DownloadOutlined />} onClick={generatePDF}>
+          Download PDF
+        </Button>
+      </Space>
+      {contextHolder}
       <Table
+        ref={tableRef}
         rowKey={"id"}
         columns={columns}
         dataSource={data}
@@ -47,6 +73,7 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
         onChange={(pagination) => {
           setPaging({
             ...pagination,
+            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
           });
         }}
         loading={loading}
@@ -63,20 +90,28 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
           });
           return (
             <Table.Summary fixed>
-              <Table.Summary.Row>
+              <Table.Summary.Row style={{ background: "#fafafa" }}>
                 <Table.Summary.Cell index={0}>
                   <div style={{ fontWeight: 600 }}>Total</div>
                 </Table.Summary.Cell>
-                <Table.Summary.Cell index={2}>{sumGross ? sumGross : "-"}</Table.Summary.Cell>
-                <Table.Summary.Cell index={3}>{sumVoid ? sumVoid : "-"}</Table.Summary.Cell>
-                <Table.Summary.Cell index={4}>{sumCancelled ? sumCancelled : "-"}</Table.Summary.Cell>
-                <Table.Summary.Cell index={5}>{sumNet ? sumNet : "-"}</Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>
+                  {sumGross ? sumGross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>
+                  {sumVoid ? sumVoid.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={4}>
+                  {sumCancelled ? sumCancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={5}>
+                  {sumNet ? sumNet.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
               </Table.Summary.Row>
             </Table.Summary>
           );
         }}
       />
-    </>
+    </Card>
   );
 };
 

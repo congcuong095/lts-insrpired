@@ -122,7 +122,9 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                               : styleCell.borderBottom,
                         }}
                       >
-                        {product_groups?.gross ?? "-"}
+                        {product_groups?.gross
+                          ? product_groups?.gross.toLocaleString("en-US", { style: "decimal" })
+                          : "-"}
                       </div>
                     );
                   })}
@@ -161,7 +163,9 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                               : styleCell.borderBottom,
                         }}
                       >
-                        {product_groups?.void ?? "-"}
+                        {product_groups?.void
+                          ? product_groups?.void.toLocaleString("en-US", { style: "decimal" })
+                          : "-"}
                       </div>
                     );
                   })}
@@ -200,7 +204,9 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                               : styleCell.borderBottom,
                         }}
                       >
-                        {product_groups?.cancelled ?? "-"}
+                        {product_groups?.cancelled
+                          ? product_groups?.cancelled.toLocaleString("en-US", { style: "decimal" })
+                          : "-"}
                       </div>
                     );
                   })}
@@ -239,7 +245,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                               : styleCell.borderBottom,
                         }}
                       >
-                        {product_groups?.net ?? "-"}
+                        {product_groups?.net ? product_groups?.net.toLocaleString("en-US", { style: "decimal" }) : "-"}
                       </div>
                     );
                   })}
@@ -264,9 +270,13 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
             return (
               <div
                 key={indexCate}
-                style={{ ...styleCell, borderBottom: indexCate === category.length - 1 ? "" : styleCell.borderBottom }}
+                style={{
+                  ...styleCell,
+                  borderBottom: indexCate === category.length - 1 ? "" : styleCell.borderBottom,
+                  height: `${cate?.product_groups?.length ? `${cate?.product_groups?.length * 55}px` : "100%"}`,
+                }}
               >
-                {cate?.category_net ?? "-"}
+                {cate?.category_net ? cate?.category_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
               </div>
             );
           })}
@@ -277,6 +287,6 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
   {
     title: "Daily Net",
     dataIndex: "daily_net",
-    render: (daily_net) => daily_net,
+    render: (daily_net) => (daily_net ? daily_net.toLocaleString("en-US", { style: "decimal" }) : "-"),
   },
 ];
