@@ -30,9 +30,7 @@ interface IFormSearch {
 const Report: React.FC = () => {
   const [selectedTable, setSelectedTable] = useState("none");
   const [params, setParams] = useState<IParamsReport>();
-  const [formSearch, setFormSearch] = useState<IFormSearch>({
-    table: "",
-  });
+  const [formSearch, setFormSearch] = useState<IFormSearch>({});
 
   const [errorMessage, contextHolder] = notification.useNotification();
 
@@ -118,7 +116,7 @@ const Report: React.FC = () => {
       });
     }
   };
-
+  
   return (
     <div
       style={{
@@ -280,14 +278,14 @@ const Report: React.FC = () => {
           }}
         >
           <Space wrap>
-            <Button type="primary" onClick={() => hanldeSearch()} disabled={formSearch?.table === "none"}>
+            <Button type="primary" onClick={() => hanldeSearch()} disabled={formSearch?.table === "" || !formSearch?.table}>
               Genarate
             </Button>
             <Button
               type="primary"
               icon={<DownloadOutlined />}
               onClick={handlePrint}
-              disabled={formSearch?.table === "none"}
+              disabled={formSearch?.table === "" || !formSearch?.table}
             >
               Download PDF
             </Button>
