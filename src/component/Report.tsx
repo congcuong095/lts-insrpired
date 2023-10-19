@@ -1,12 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Card, DatePicker, Select, Space, Tabs } from "antd";
+import { Button, Card, DatePicker, Select, Space, Table, Tabs, notification } from "antd";
 import CategoryAndProduct from "./CategoryAndProductGroup/CategoryAndProductGroup";
 import Summary from "./Summary/Summary";
 import Category from "./Category/Category";
 import ProductGroup from "./ProductGroup/ProductGroup";
 import { IParamsReport } from "@/services/type";
 import dayjs from "dayjs";
+import { columns } from "./Summary/columns";
+import { DownloadOutlined } from "@ant-design/icons";
+import { getPdfCategory, getPdfCategoryAndProductGroup, getPdfProductGroup, getPdfSummary } from "@/services/report";
+import { AxiosError } from "axios";
 
 const { RangePicker } = DatePicker;
 
@@ -24,18 +28,13 @@ interface IFormSearch {
 }
 
 const Report: React.FC = () => {
-  const [selectedTable, setSelectedTable] = useState("summary");
-  const [params, setParams] = useState<IParamsReport>({
-    from_date: "01-" + dayjs().format("MM-YYYY"),
-    to_date: dayjs().format("DD-MM-YYYY"),
-  });
+  const [selectedTable, setSelectedTable] = useState("none");
+  const [params, setParams] = useState<IParamsReport>();
   const [formSearch, setFormSearch] = useState<IFormSearch>({
-    table: "summary",
-    date: {
-      from_date: "01-" + dayjs().format("MM-YYYY"),
-      to_date: dayjs().format("DD-MM-YYYY"),
-    },
+    table: "none",
   });
+
+  const [errorMessage, contextHolder] = notification.useNotification();
 
   const onFilterDate = (dateString: [string, string] | string) => {
     const fromDate = dateString?.[0];
@@ -54,15 +53,23 @@ const Report: React.FC = () => {
           },
         };
       });
+    } else {
+      setFormSearch((pre) => {
+        return {
+          ...pre,
+          date: undefined,
+        };
+      });
     }
   };
 
   const hanldeSearch = () => {
-    setSelectedTable(formSearch?.table ?? "");
+    setSelectedTable(formSearch?.table ?? "none");
     setParams((prev) => {
       const result = {
         ...prev,
-        ...formSearch?.date,
+        from_date: formSearch?.date?.from_date,
+        to_date: formSearch?.date?.to_date,
       };
       if (formSearch?.category_id) {
         result.category_id = formSearch?.category_id;
@@ -78,19 +85,38 @@ const Report: React.FC = () => {
     });
   };
 
-  const handleCancel = () => {
-    setFormSearch({
-      table: "summary",
-      date: {
-        from_date: "01-" + dayjs().format("MM-YYYY"),
-        to_date: dayjs().format("DD-MM-YYYY"),
-      },
-    });
-    setSelectedTable("summary");
-    setParams({
-      from_date: "01-" + dayjs().format("MM-YYYY"),
-      to_date: dayjs().format("DD-MM-YYYY"),
-    });
+  const handlePrint = async () => {
+    try {
+      if (!params?.from_date || !params?.to_date) {
+        throw { message: "Wrong date format" };
+      }
+      let res;
+      switch (formSearch?.table) {
+        case "summary":
+          res = await getPdfSummary({ ...params, is_pdf: true });
+          break;
+        case "category":
+          res = await getPdfCategory({ ...params, is_pdf: true });
+          break;
+        case "productGroup":
+          res = await getPdfProductGroup({ ...params, is_pdf: true });
+          break;
+        case "categoryProductGroup":
+          res = await getPdfCategoryAndProductGroup({ ...params, is_pdf: true });
+          break;
+        default:
+          return;
+      }
+      if (res) {
+        const file = new Blob([res?.data], { type: "application/pdf" });
+        window.open(URL.createObjectURL(file), "_blank");
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      errorMessage.error({
+        message: err?.message,
+      });
+    }
   };
 
   return (
@@ -100,6 +126,7 @@ const Report: React.FC = () => {
         padding: "5px",
       }}
     >
+      {contextHolder}
       <Card
         style={{
           marginBottom: "20px",
@@ -115,7 +142,7 @@ const Report: React.FC = () => {
                 marginBottom: "4px",
               }}
             >
-              Select table:
+              Select report:
             </div>
             <Select
               value={formSearch?.table}
@@ -123,17 +150,15 @@ const Report: React.FC = () => {
               onChange={(value) => {
                 setFormSearch({
                   table: value,
-                  date: {
-                    from_date: "01-" + dayjs().format("MM-YYYY"),
-                    to_date: dayjs().format("DD-MM-YYYY"),
-                  },
+                  date: undefined,
                 });
               }}
               options={[
-                { value: "summary", label: "None" },
-                { value: "category", label: "Category " },
-                { value: "productGroup", label: "Product Group" },
-                { value: "categoryProductGroup", label: "Category And Product Group" },
+                { value: "none", label: "None" },
+                { value: "summary", label: "Sales Summary" },
+                { value: "category", label: "Sales By Category" },
+                { value: "productGroup", label: "Sales By Product Group" },
+                { value: "categoryProductGroup", label: "Sales By Category by Product Group" },
               ]}
             />
           </div>
@@ -151,7 +176,10 @@ const Report: React.FC = () => {
             <RangePicker
               style={{ width: 400 }}
               format={"DD-MM-YYYY"}
-              value={[dayjs(formSearch.date?.from_date, "DD-MM-YYYY"), dayjs(formSearch.date?.to_date, "DD-MM-YYYY")]}
+              value={[
+                formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null,
+                formSearch.date?.to_date ? dayjs(formSearch.date?.to_date, "DD-MM-YYYY") : null,
+              ]}
               onChange={(_, dateString) => onFilterDate(dateString)}
             />
           </div>
@@ -252,14 +280,44 @@ const Report: React.FC = () => {
           }}
         >
           <Space wrap>
-            <Button type="primary" onClick={() => hanldeSearch()}>
-              Search
+            <Button type="primary" onClick={() => hanldeSearch()} disabled={formSearch?.table === "none"}>
+              Genarate
             </Button>
-            <Button onClick={() => handleCancel()}>Cancel</Button>
+            <Button
+              type="primary"
+              icon={<DownloadOutlined />}
+              onClick={handlePrint}
+              disabled={formSearch?.table === "none"}
+            >
+              Download PDF
+            </Button>
           </Space>
         </div>
       </Card>
       <div>
+        {selectedTable === "none" && (
+          <Table
+            rowKey={"id"}
+            columns={columns}
+            dataSource={[]}
+            bordered
+            summary={() => {
+              return (
+                <Table.Summary fixed>
+                  <Table.Summary.Row style={{ background: "#fafafa" }}>
+                    <Table.Summary.Cell index={0}>
+                      <div style={{ fontWeight: 600 }}>Total</div>
+                    </Table.Summary.Cell>
+                    <Table.Summary.Cell index={2}>{"-"}</Table.Summary.Cell>
+                    <Table.Summary.Cell index={3}>{"-"}</Table.Summary.Cell>
+                    <Table.Summary.Cell index={4}>{"-"}</Table.Summary.Cell>
+                    <Table.Summary.Cell index={5}>{"-"}</Table.Summary.Cell>
+                  </Table.Summary.Row>
+                </Table.Summary>
+              );
+            }}
+          />
+        )}
         {selectedTable === "summary" && <Summary params={params} />}
         {selectedTable === "category" && <Category params={params} />}
         {selectedTable === "productGroup" && <ProductGroup params={params} />}

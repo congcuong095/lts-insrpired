@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Space, Table, TablePaginationConfig, notification } from "antd";
+import { Card, Space, Table, TablePaginationConfig, notification } from "antd";
 import { columns } from "./columns";
 import { ParamReportProps } from "../Report";
-import { getCategoryAndProductGroup, getPdfCategoryAndProductGroup } from "@/services/report";
+import { getCategoryAndProductGroup } from "@/services/report";
 import { ResponeCategoryAndProductGroup } from "@/services/type";
 import { AxiosError } from "axios";
-import { DownloadOutlined } from "@ant-design/icons";
 
 const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeCategoryAndProductGroup | undefined>();
@@ -23,6 +22,9 @@ const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
   const getData = async () => {
     setLoading(true);
     try {
+      if (!params?.from_date || !params?.to_date) {
+        throw { message: "Wrong date format" };
+      }
       const res = await getCategoryAndProductGroup(params);
       if (res?.data) {
         setData(res?.data);
@@ -36,12 +38,6 @@ const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
     setLoading(false);
   };
 
-  const handlePrint = async () => {
-    const res = await getPdfCategoryAndProductGroup({ ...params, is_pdf: true });
-    const file = new Blob([res?.data], { type: "application/pdf" });
-    window.open(URL.createObjectURL(file), "_blank");
-  };
-
   useEffect(() => {
     getData();
   }, [params]);
@@ -50,9 +46,6 @@ const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
     <Card>
       <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
         <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales By Category by Product Group</div>
-        <Button type="primary" icon={<DownloadOutlined />} onClick={() => handlePrint()}>
-          Download PDF
-        </Button>
       </Space>
       {contextHolder}
       <Table

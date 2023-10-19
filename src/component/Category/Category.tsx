@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Space, Table, TablePaginationConfig, notification } from "antd";
+import { Card, Space, Table, TablePaginationConfig, notification } from "antd";
 import { columns } from "./columns";
 import { ResponeCategory } from "@/services/type";
 import { ParamReportProps } from "../Report";
-import { getCategory, getPdfCategory } from "@/services/report";
+import { getCategory } from "@/services/report";
 import { AxiosError } from "axios";
-import { DownloadOutlined } from "@ant-design/icons";
 
 const Category: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeCategory | undefined>();
@@ -23,6 +22,9 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
   const getData = async () => {
     setLoading(true);
     try {
+      if (!params?.from_date || !params?.to_date) {
+        throw { message: "Wrong date format" };
+      }
       const res = await getCategory(params);
       if (res?.data) {
         setData(res?.data);
@@ -36,12 +38,6 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
     setLoading(false);
   };
 
-  const handlePrint = async () => {
-    const res = await getPdfCategory({ ...params, is_pdf: true });
-    const file = new Blob([res?.data], { type: "application/pdf" });
-    window.open(URL.createObjectURL(file), "_blank");
-  };
-
   useEffect(() => {
     getData();
   }, [params]);
@@ -50,9 +46,6 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
     <Card>
       <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
         <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales By Category</div>
-        <Button type="primary" icon={<DownloadOutlined />} onClick={() => handlePrint()}>
-          Download PDF
-        </Button>
       </Space>
       {contextHolder}
       <Table
