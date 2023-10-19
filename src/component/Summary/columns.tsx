@@ -5,7 +5,6 @@ export const columns: ColumnsType<SalesSummary> = [
   {
     title: "Date",
     dataIndex: "processing_date",
-
     render: (date) => date,
   },
   {

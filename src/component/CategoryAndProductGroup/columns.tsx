@@ -65,7 +65,12 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
         >
           {category.map((cate, indexCate: number) => {
             return (
-              <div key={indexCate}>
+              <div
+                key={indexCate}
+                style={{
+                  minWidth: "200px",
+                }}
+              >
                 {cate?.product_groups &&
                   cate?.product_groups.map((group, index: number) => {
                     return (

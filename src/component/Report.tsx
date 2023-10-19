@@ -107,7 +107,14 @@ const Report: React.FC = () => {
       }
       if (res) {
         const file = new Blob([res?.data], { type: "application/pdf" });
-        window.open(URL.createObjectURL(file), "_blank");
+
+        let a = document.createElement("a");
+        let blobURL = URL.createObjectURL(file);
+        a.download = formSearch?.table + "-from-" + formSearch?.date?.from_date + "-to-" + formSearch?.date?.to_date;
+        a.href = blobURL;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -116,7 +123,7 @@ const Report: React.FC = () => {
       });
     }
   };
-  
+
   return (
     <div
       style={{
@@ -278,7 +285,11 @@ const Report: React.FC = () => {
           }}
         >
           <Space wrap>
-            <Button type="primary" onClick={() => hanldeSearch()} disabled={formSearch?.table === "" || !formSearch?.table}>
+            <Button
+              type="primary"
+              onClick={() => hanldeSearch()}
+              disabled={formSearch?.table === "" || !formSearch?.table}
+            >
               Genarate
             </Button>
             <Button
