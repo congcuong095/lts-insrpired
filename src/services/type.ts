@@ -1,6 +1,7 @@
 export interface IParamsReport {
   from_date?: string;
   to_date?: string;
+  is_pdf?: boolean;
   category_id?: number;
   product_group_id?: number;
 }

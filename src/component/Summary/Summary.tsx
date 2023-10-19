@@ -1,13 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Space, Table, TablePaginationConfig, notification } from "antd";
 import { columns } from "./columns";
 import { ResponeSummary } from "@/services/type";
-import { getSummary } from "@/services/report";
+import { getPdfSummary, getSummary } from "@/services/report";
 import { ParamReportProps } from "../Report";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { DownloadOutlined } from "@ant-design/icons";
-import { openPrintPdf } from "@/utils/pdf";
-import { useReactToPrint } from "react-to-print";
 
 const Summary: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeSummary | undefined>();
@@ -40,16 +38,10 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
   };
 
   const handlePrint = async () => {
-    const res = await axios("");
-    openPrintPdf(res?.data.data);
+    const res = await getPdfSummary({ ...params, is_pdf: true });
+    const file = new Blob([res?.data], { type: "application/pdf" });
+    window.open(URL.createObjectURL(file), "_blank");
   };
-
-  const generatePDF = useReactToPrint({
-    content: () => tableRef.current,
-    documentTitle: "Sales by summary",
-  });
-
-  const tableRef = useRef(null);
 
   useEffect(() => {
     getData();
@@ -59,13 +51,12 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
     <Card>
       <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
         <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales Summary</div>
-        <Button type="primary" icon={<DownloadOutlined />} onClick={generatePDF}>
+        <Button type="primary" icon={<DownloadOutlined />} onClick={handlePrint}>
           Download PDF
         </Button>
       </Space>
       {contextHolder}
       <Table
-        ref={tableRef}
         rowKey={"id"}
         columns={columns}
         dataSource={data?.sales_summary}

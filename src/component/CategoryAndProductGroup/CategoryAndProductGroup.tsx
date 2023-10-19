@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Space, Table, TablePaginationConfig, notification } from "antd";
 import { columns } from "./columns";
 import { ParamReportProps } from "../Report";
-import { getCategoryAndProductGroup } from "@/services/report";
+import { getCategoryAndProductGroup, getPdfCategoryAndProductGroup } from "@/services/report";
 import { ResponeCategoryAndProductGroup } from "@/services/type";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { DownloadOutlined } from "@ant-design/icons";
-import { openPrintPdf } from "@/utils/pdf";
 
 const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeCategoryAndProductGroup | undefined>();
@@ -38,8 +37,9 @@ const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
   };
 
   const handlePrint = async () => {
-    const res = await axios("https://datausa.io/api/data?drilldowns=Nation&measures=Population");
-    openPrintPdf(res?.data.data);
+    const res = await getPdfCategoryAndProductGroup({ ...params, is_pdf: true });
+    const file = new Blob([res?.data], { type: "application/pdf" });
+    window.open(URL.createObjectURL(file), "_blank");
   };
 
   useEffect(() => {

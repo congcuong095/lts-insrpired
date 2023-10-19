@@ -3,10 +3,9 @@ import { Button, Card, Space, Table, TablePaginationConfig, notification } from 
 import { columns } from "./columns";
 import { ResponeCategory } from "@/services/type";
 import { ParamReportProps } from "../Report";
-import { getCategory } from "@/services/report";
-import axios, { AxiosError } from "axios";
+import { getCategory, getPdfCategory } from "@/services/report";
+import { AxiosError } from "axios";
 import { DownloadOutlined } from "@ant-design/icons";
-import { openPrintPdf } from "@/utils/pdf";
 
 const Category: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeCategory | undefined>();
@@ -38,8 +37,9 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
   };
 
   const handlePrint = async () => {
-    const res = await axios("https://datausa.io/api/data?drilldowns=Nation&measures=Population");
-    openPrintPdf(res?.data.data);
+    const res = await getPdfCategory({ ...params, is_pdf: true });
+    const file = new Blob([res?.data], { type: "application/pdf" });
+    window.open(URL.createObjectURL(file), "_blank");
   };
 
   useEffect(() => {
