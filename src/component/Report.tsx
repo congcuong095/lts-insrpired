@@ -31,7 +31,7 @@ const Report: React.FC = () => {
   const [selectedTable, setSelectedTable] = useState("none");
   const [params, setParams] = useState<IParamsReport>();
   const [formSearch, setFormSearch] = useState<IFormSearch>({
-    table: "none",
+    table: "",
   });
 
   const [errorMessage, contextHolder] = notification.useNotification();
@@ -153,8 +153,8 @@ const Report: React.FC = () => {
                   date: undefined,
                 });
               }}
+              allowClear={true}
               options={[
-                { value: "none", label: "None" },
                 { value: "summary", label: "Sales Summary" },
                 { value: "category", label: "Sales By Category" },
                 { value: "productGroup", label: "Sales By Product Group" },
