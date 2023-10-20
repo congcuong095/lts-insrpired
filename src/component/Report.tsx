@@ -89,18 +89,29 @@ const Report: React.FC = () => {
         throw { message: "Wrong date format" };
       }
       let res;
+      const finalParam: IParamsReport = { ...formSearch?.date, is_pdf: true };
+      if (formSearch?.category_id) {
+        finalParam.category_id = formSearch?.category_id;
+      } else {
+        delete finalParam.category_id;
+      }
+      if (formSearch?.product_group_id) {
+        finalParam.product_group_id = formSearch?.product_group_id;
+      } else {
+        delete finalParam.product_group_id;
+      }
       switch (formSearch?.table) {
         case "summary":
-          res = await getPdfSummary({ ...formSearch?.date, is_pdf: true });
+          res = await getPdfSummary(finalParam);
           break;
         case "category":
-          res = await getPdfCategory({ ...formSearch?.date, is_pdf: true });
+          res = await getPdfCategory(finalParam);
           break;
         case "productGroup":
-          res = await getPdfProductGroup({ ...formSearch?.date, is_pdf: true });
+          res = await getPdfProductGroup(finalParam);
           break;
         case "categoryProductGroup":
-          res = await getPdfCategoryAndProductGroup({ ...formSearch?.date, is_pdf: true });
+          res = await getPdfCategoryAndProductGroup(finalParam);
           break;
         default:
           return;
@@ -123,6 +134,7 @@ const Report: React.FC = () => {
       });
     }
   };
+  console.log(formSearch);
 
   return (
     <div
