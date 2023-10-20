@@ -134,7 +134,6 @@ const Report: React.FC = () => {
       });
     }
   };
-  console.log(formSearch);
 
   return (
     <div
