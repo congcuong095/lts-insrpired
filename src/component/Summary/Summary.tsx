@@ -5,6 +5,7 @@ import { ResponeSummary } from "@/services/type";
 import { getSummary } from "@/services/report";
 import { ParamReportProps } from "../Report";
 import { AxiosError } from "axios";
+import dayjs from "dayjs";
 
 const Summary: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeSummary | undefined>();
@@ -43,6 +44,14 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
     getData();
   }, [params]);
 
+  const sortData = (array: any) => {
+    if (array) {
+      return array.sort((objA: any, objB: any) => {
+        return dayjs(objB.processing_date).unix() - dayjs(objA.processing_date).unix();
+      });
+    }
+  };
+
   return (
     <Card>
       <Space style={{ marginBottom: 16, display: "flex", justifyContent: "flex-start" }}>
@@ -52,7 +61,7 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
       <Table
         rowKey={"id"}
         columns={columns}
-        dataSource={data?.sales_summary}
+        dataSource={sortData(data?.sales_summary)}
         bordered
         pagination={paging}
         onChange={(pagination) => {

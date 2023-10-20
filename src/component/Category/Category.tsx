@@ -5,6 +5,7 @@ import { ResponeCategory } from "@/services/type";
 import { ParamReportProps } from "../Report";
 import { getCategory } from "@/services/report";
 import { AxiosError } from "axios";
+import dayjs from "dayjs";
 
 const Category: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeCategory | undefined>();
@@ -42,6 +43,14 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
     getData();
   }, [params]);
 
+  const sortData = (array: any) => {
+    if (array) {
+      return array.sort((objA: any, objB: any) => {
+        return dayjs(objB.processing_date).unix() - dayjs(objA.processing_date).unix();
+      });
+    }
+  };
+
   return (
     <Card>
       <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
@@ -51,7 +60,7 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
       <Table
         rowKey={"processing_date"}
         columns={columns}
-        dataSource={data?.sales_by_category}
+        dataSource={sortData(data?.sales_by_category)}
         bordered
         pagination={paging}
         onChange={(pagination) => {
