@@ -85,22 +85,22 @@ const Report: React.FC = () => {
 
   const handlePrint = async () => {
     try {
-      if (!params?.from_date || !params?.to_date) {
+      if (!formSearch?.date?.from_date || !formSearch?.date?.to_date) {
         throw { message: "Wrong date format" };
       }
       let res;
       switch (formSearch?.table) {
         case "summary":
-          res = await getPdfSummary({ ...params, is_pdf: true });
+          res = await getPdfSummary({ ...formSearch?.date, is_pdf: true });
           break;
         case "category":
-          res = await getPdfCategory({ ...params, is_pdf: true });
+          res = await getPdfCategory({ ...formSearch?.date, is_pdf: true });
           break;
         case "productGroup":
-          res = await getPdfProductGroup({ ...params, is_pdf: true });
+          res = await getPdfProductGroup({ ...formSearch?.date, is_pdf: true });
           break;
         case "categoryProductGroup":
-          res = await getPdfCategoryAndProductGroup({ ...params, is_pdf: true });
+          res = await getPdfCategoryAndProductGroup({ ...formSearch?.date, is_pdf: true });
           break;
         default:
           return;

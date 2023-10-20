@@ -46,7 +46,7 @@ const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
   const sortData = (array: any) => {
     if (array) {
       return array.sort((objA: any, objB: any) => {
-        return dayjs(objB.processing_date).unix() - dayjs(objA.processing_date).unix();
+        return dayjs(objB.processing_date, "DD-MM-YYYY").unix() - dayjs(objA.processing_date, "DD-MM-YYYY").unix();
       });
     }
   };
