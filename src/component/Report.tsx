@@ -135,6 +135,7 @@ const Report: React.FC = () => {
     }
   };
 
+
   return (
     <div
       style={{
@@ -218,7 +219,7 @@ const Report: React.FC = () => {
                   if (value === 0) {
                     setFormSearch((prev) => {
                       delete prev.category_id;
-                      return prev;
+                      return {...prev};
                     });
                   } else {
                     setFormSearch({
@@ -262,7 +263,7 @@ const Report: React.FC = () => {
                   if (value === 0) {
                     setFormSearch((prev) => {
                       delete prev.product_group_id;
-                      return prev;
+                      return {...prev};
                     });
                   } else {
                     setFormSearch({
