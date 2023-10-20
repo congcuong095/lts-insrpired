@@ -31,7 +31,8 @@ const Report: React.FC = () => {
   const [selectedTable, setSelectedTable] = useState("none");
   const [params, setParams] = useState<IParamsReport>();
   const [formSearch, setFormSearch] = useState<IFormSearch>({});
-
+  const [loadingPdf, setLoadingPdf] = useState(false);
+  const [loadingGenerate, setLoadingGenerate] = useState(false);
   const [errorMessage, contextHolder] = notification.useNotification();
 
   const onFilterDate = (dateString: [string, string] | string) => {
@@ -84,6 +85,7 @@ const Report: React.FC = () => {
   };
 
   const handlePrint = async () => {
+    setLoadingPdf(true);
     try {
       if (!formSearch?.date?.from_date || !formSearch?.date?.to_date) {
         throw { message: "Wrong date format" };
@@ -133,8 +135,8 @@ const Report: React.FC = () => {
         message: err?.message,
       });
     }
+    setLoadingPdf(false);
   };
-
 
   return (
     <div
@@ -219,7 +221,7 @@ const Report: React.FC = () => {
                   if (value === 0) {
                     setFormSearch((prev) => {
                       delete prev.category_id;
-                      return {...prev};
+                      return { ...prev };
                     });
                   } else {
                     setFormSearch({
@@ -263,7 +265,7 @@ const Report: React.FC = () => {
                   if (value === 0) {
                     setFormSearch((prev) => {
                       delete prev.product_group_id;
-                      return {...prev};
+                      return { ...prev };
                     });
                   } else {
                     setFormSearch({
@@ -301,6 +303,7 @@ const Report: React.FC = () => {
               type="primary"
               onClick={() => hanldeSearch()}
               disabled={formSearch?.table === "" || !formSearch?.table}
+              loading={loadingGenerate}
             >
               Genarate
             </Button>
@@ -309,6 +312,7 @@ const Report: React.FC = () => {
               icon={<DownloadOutlined />}
               onClick={handlePrint}
               disabled={formSearch?.table === "" || !formSearch?.table}
+              loading={loadingPdf}
             >
               Download PDF
             </Button>

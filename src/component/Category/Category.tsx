@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Space, Table, TablePaginationConfig, notification } from "antd";
+import { Card, Space, Statistic, Table, TablePaginationConfig, notification } from "antd";
 import { columns } from "./columns";
 import { ResponeCategory } from "@/services/type";
 import { ParamReportProps } from "../Report";
@@ -55,6 +55,28 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
     <Card>
       <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
         <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales By Category</div>
+        <Space style={{ display: "flex", fontSize: "20px" }} size={50}>
+          <Statistic
+            title="Total Gross"
+            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+            valueStyle={{ fontSize: "16px" }}
+          />
+          <Statistic
+            title="Total Void"
+            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+            valueStyle={{ fontSize: "16px" }}
+          />
+          <Statistic
+            title="Total Cancelled"
+            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+            valueStyle={{ fontSize: "16px" }}
+          />
+          <Statistic
+            title="Total Net"
+            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+            valueStyle={{ fontSize: "16px" }}
+          />
+        </Space>
       </Space>
       {contextHolder}
       <Table
@@ -70,31 +92,6 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
           });
         }}
         loading={loading}
-        summary={() => {
-          return (
-            <Table.Summary fixed>
-              <Table.Summary.Row style={{ background: "#fafafa" }}>
-                <Table.Summary.Cell index={0}>
-                  <div style={{ fontWeight: 600 }}>Total</div>
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={1}></Table.Summary.Cell>
-                <Table.Summary.Cell index={2}>
-                  {data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={3}>
-                  {data?.total_void ? data?.total_void.toLocaleString("en-US", { style: "decimal" }) : "-"}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={4}>
-                  {data?.total_cancelled ? data?.total_cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={5}>
-                  {data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
-                </Table.Summary.Cell>
-                <Table.Summary.Cell index={6}></Table.Summary.Cell>
-              </Table.Summary.Row>
-            </Table.Summary>
-          );
-        }}
       />
     </Card>
   );
