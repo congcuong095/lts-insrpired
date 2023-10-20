@@ -64,17 +64,17 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
           />
           <Statistic
             title="Total Void"
-            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+            value={data?.total_void ? data?.total_void.toLocaleString("en-US", { style: "decimal" }) : "-"}
             valueStyle={{ fontSize: "16px" }}
           />
           <Statistic
             title="Total Cancelled"
-            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+            value={data?.total_cancelled ? data?.total_cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
             valueStyle={{ fontSize: "16px" }}
           />
           <Statistic
             title="Total Net"
-            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+            value={data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
             valueStyle={{ fontSize: "16px" }}
           />
         </Space>
