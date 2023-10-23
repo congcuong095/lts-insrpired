@@ -37,6 +37,14 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
         message: err?.message,
       });
     }
+    setPaging({
+      current: 1,
+      pageSize: 10,
+      pageSizeOptions: [10, 20, 50],
+      showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+      total: data?.sales_summary?.length,
+      showSizeChanger: true,
+    });
     setLoading(false);
   };
 
@@ -58,22 +66,22 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
         <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales Summary</div>
         <Space style={{ display: "flex", fontSize: "20px" }} size={50}>
           <Statistic
-            title="Total Gross"
+            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Gross</div>}
             value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
             valueStyle={{ fontSize: "16px" }}
           />
           <Statistic
-            title="Total Void"
+            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Void</div>}
             value={data?.total_void ? data?.total_void.toLocaleString("en-US", { style: "decimal" }) : "-"}
             valueStyle={{ fontSize: "16px" }}
           />
           <Statistic
-            title="Total Cancelled"
+            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Cancelled</div>}
             value={data?.total_cancelled ? data?.total_cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
             valueStyle={{ fontSize: "16px" }}
           />
           <Statistic
-            title="Total Net"
+            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Net</div>}
             value={data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
             valueStyle={{ fontSize: "16px" }}
           />
