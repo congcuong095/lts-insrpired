@@ -11,7 +11,7 @@ const styleCell: CSSProperties = {
   height: "100%",
   boxSizing: "border-box",
   display: "flex",
-  alignItems: "center",
+  alignItems: "flex-start",
 };
 
 export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
@@ -54,7 +54,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
     },
   },
   {
-    title: "Group",
+    title: "Product Group",
     dataIndex: "categories",
     render: (category: CategoryAndProductGroupItemCategory[]) => {
       return (

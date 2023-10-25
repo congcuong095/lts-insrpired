@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Card, DatePicker, Select, Space, Table, Tabs, notification } from "antd";
+import { Button, Card, DatePicker, Select, Space, Table, notification } from "antd";
 import CategoryAndProduct from "./CategoryAndProductGroup/CategoryAndProductGroup";
 import Summary from "./Summary/Summary";
 import Category from "./Category/Category";
@@ -11,6 +11,9 @@ import { columns } from "./Summary/columns";
 import { DownloadOutlined } from "@ant-design/icons";
 import { getPdfCategory, getPdfCategoryAndProductGroup, getPdfProductGroup, getPdfSummary } from "@/services/report";
 import { AxiosError } from "axios";
+import quarterOfYear from "dayjs/plugin/quarterOfYear";
+
+dayjs.extend(quarterOfYear);
 
 const { RangePicker } = DatePicker;
 
@@ -32,8 +35,8 @@ const Report: React.FC = () => {
   const [params, setParams] = useState<IParamsReport>();
   const [formSearch, setFormSearch] = useState<IFormSearch>({});
   const [loadingPdf, setLoadingPdf] = useState(false);
-  const [loadingGenerate, setLoadingGenerate] = useState(false);
   const [errorMessage, contextHolder] = notification.useNotification();
+  const [selectDateFormat, setSelectDateFormat] = useState();
 
   const onFilterDate = (dateString: [string, string] | string) => {
     const fromDate = dateString?.[0];
@@ -59,6 +62,57 @@ const Report: React.FC = () => {
           date: undefined,
         };
       });
+    }
+  };
+
+  const handleSelectDate = (time: dayjs.Dayjs | null) => {
+    if (selectDateFormat && time) {
+      switch (selectDateFormat) {
+        case "day":
+          {
+            const stringTime = time.format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: stringTime, to_date: stringTime } };
+            });
+          }
+          break;
+        case "week":
+          {
+            const startTime = time.startOf("week").format("DD-MM-YYYY");
+            const endTime = time.endOf("week").format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: startTime, to_date: endTime } };
+            });
+          }
+          break;
+        case "month":
+          {
+            const startTime = time.startOf("month").format("DD-MM-YYYY");
+            const endTime = time.endOf("month").format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: startTime, to_date: endTime } };
+            });
+          }
+          break;
+        case "quarter":
+          {
+            const startTime = time.startOf("quarter").format("DD-MM-YYYY");
+            const endTime = time.endOf("quarter").format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: startTime, to_date: endTime } };
+            });
+          }
+          break;
+        case "year":
+          {
+            const startTime = time.startOf("year").format("DD-MM-YYYY");
+            const endTime = time.endOf("year").format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: startTime, to_date: endTime } };
+            });
+          }
+          break;
+      }
     }
   };
 
@@ -137,6 +191,22 @@ const Report: React.FC = () => {
     }
     setLoadingPdf(false);
   };
+  const formatDate = () => {
+    if (selectDateFormat) {
+      switch (selectDateFormat) {
+        case "day":
+          return "DD-MM-YYYY";
+        case "week":
+          return "wo-YYYY";
+        case "month":
+          return "MM-YYYY";
+        case "quarter":
+          return "[Q]Q-YYYY";
+        case "year":
+          return "YYYY";
+      }
+    }
+  };
 
   return (
     <div
@@ -151,7 +221,7 @@ const Report: React.FC = () => {
           marginBottom: "20px",
         }}
       >
-        <Space size={32} wrap align={"center"} style={{ marginBottom: "20px" }}>
+        <Space size={32} wrap align={"start"} style={{ marginBottom: "20px" }}>
           <div>
             <div
               style={{
@@ -171,6 +241,7 @@ const Report: React.FC = () => {
                   table: value,
                   date: undefined,
                 });
+                setSelectDateFormat(undefined);
               }}
               allowClear={true}
               options={[
@@ -181,27 +252,74 @@ const Report: React.FC = () => {
               ]}
             />
           </div>
-          <div>
-            <div
-              style={{
-                width: "100px",
-                overflow: "hidden",
-                fontWeight: "600",
-                marginBottom: "4px",
-              }}
-            >
-              Date:
+          <Space size={16} direction="vertical">
+            <div>
+              <div
+                style={{
+                  width: "100px",
+                  overflow: "hidden",
+                  fontWeight: "600",
+                  marginBottom: "4px",
+                }}
+              >
+                Date format:
+              </div>
+              <Select
+                value={selectDateFormat}
+                style={{ width: 400 }}
+                onChange={(value) => {
+                  setSelectDateFormat(value);
+                  setFormSearch((prev) => {
+                    return { ...prev, date: undefined };
+                  });
+                }}
+                allowClear={true}
+                options={[
+                  { value: "range", label: "Date range" },
+                  { value: "day", label: "Day" },
+                  { value: "week", label: "Week" },
+                  { value: "month", label: "Month" },
+                  { value: "quarter", label: "Quarter" },
+                  { value: "year", label: "Year" },
+                ]}
+              />
             </div>
-            <RangePicker
-              style={{ width: 400 }}
-              format={"DD-MM-YYYY"}
-              value={[
-                formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null,
-                formSearch.date?.to_date ? dayjs(formSearch.date?.to_date, "DD-MM-YYYY") : null,
-              ]}
-              onChange={(_, dateString) => onFilterDate(dateString)}
-            />
-          </div>
+            {selectDateFormat && (
+              <div>
+                <div
+                  style={{
+                    width: "100px",
+                    overflow: "hidden",
+                    fontWeight: "600",
+                    marginBottom: "4px",
+                  }}
+                >
+                  Select Date:
+                </div>
+                {selectDateFormat === "range" ? (
+                  <RangePicker
+                    style={{ width: 400 }}
+                    format={"DD-MM-YYYY"}
+                    value={[
+                      formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null,
+                      formSearch.date?.to_date ? dayjs(formSearch.date?.to_date, "DD-MM-YYYY") : null,
+                    ]}
+                    onChange={(_, dateString) => onFilterDate(dateString)}
+                  />
+                ) : (
+                  <DatePicker
+                    style={{ width: 400 }}
+                    onChange={(value, _) => {
+                      handleSelectDate(value);
+                    }}
+                    picker={selectDateFormat}
+                    format={formatDate()}
+                    value={formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null}
+                  />
+                )}
+              </div>
+            )}
+          </Space>
 
           {(formSearch?.table === "category" || formSearch?.table === "categoryProductGroup") && (
             <div>
@@ -233,16 +351,17 @@ const Report: React.FC = () => {
                 value={formSearch?.category_id ?? 0}
               >
                 <Select.Option value={0}>All</Select.Option>
-                <Select.Option value={1}>Pharmacy</Select.Option>
-                <Select.Option value={2}>Minimarkets</Select.Option>
-                <Select.Option value={3}>Supermarkets</Select.Option>
-                <Select.Option value={4}>Shopping mall</Select.Option>
-                <Select.Option value={5}>Retailer Category 1</Select.Option>
-                <Select.Option value={6}>Retailer Category 2</Select.Option>
-                <Select.Option value={7}>Retailer Category 3</Select.Option>
-                <Select.Option value={8}>Retailer Category 4</Select.Option>
-                <Select.Option value={9}>Retailer Category 5</Select.Option>
-                <Select.Option value={10}>Retailer Category 6</Select.Option>
+                <Select.Option value={1}>Lotto Agency</Select.Option>
+                <Select.Option value={2}>Supermarkets</Select.Option>
+                <Select.Option value={3}>Guest House</Select.Option>
+                <Select.Option value={4}>Coffee Shop</Select.Option>
+                <Select.Option value={5}>Mini Market'</Select.Option>
+                <Select.Option value={6}>Gas Station</Select.Option>
+                <Select.Option value={7}>Drug Store</Select.Option>
+                <Select.Option value={8}>Liquor Store</Select.Option>
+                <Select.Option value={9}>Service Office</Select.Option>
+                <Select.Option value={10}>Leidsa Office</Select.Option>
+                <Select.Option value={2000000}>Digital</Select.Option>
               </Select>
             </div>
           )}
@@ -279,14 +398,14 @@ const Report: React.FC = () => {
                 <Select.Option value={0}>All</Select.Option>
                 <Select.Option value={1}>Draw Games</Select.Option>
                 <Select.Option value={2}>Kino Games</Select.Option>
-                <Select.Option value={3}>Number Match</Select.Option>
-                <Select.Option value={4}>Bonus Ball, Odd / Even</Select.Option>
-                <Select.Option value={5}>Last Ball Drawn</Select.Option>
-                <Select.Option value={6}>Sum</Select.Option>
-                <Select.Option value={7}>First Ball Drawn</Select.Option>
-                <Select.Option value={8}>Bonus Ball, Colour</Select.Option>
-                <Select.Option value={9}>Game Outcome</Select.Option>
-                <Select.Option value={10}>Group Outcome</Select.Option>
+                <Select.Option value={3}>Fixed Odds</Select.Option>
+                <Select.Option value={4}>Product Group 1</Select.Option>
+                <Select.Option value={5}>Product Group 2</Select.Option>
+                <Select.Option value={6}>Product Group 3</Select.Option>
+                <Select.Option value={7}>Product Group 4</Select.Option>
+                <Select.Option value={8}>Product Group 5</Select.Option>
+                <Select.Option value={9}>Product Group 6</Select.Option>
+                <Select.Option value={10}>Product Group 7</Select.Option>
               </Select>
             </div>
           )}
@@ -303,7 +422,6 @@ const Report: React.FC = () => {
               type="primary"
               onClick={() => hanldeSearch()}
               disabled={formSearch?.table === "" || !formSearch?.table}
-              loading={loadingGenerate}
             >
               Genarate
             </Button>

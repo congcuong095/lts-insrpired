@@ -6,6 +6,8 @@ import { getProductGroup } from "@/services/report";
 import { ResponeProductGroup } from "@/services/type";
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
+import { Currency } from "@/constant/currency";
+import { usePathname } from "next/navigation";
 
 const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
   const [data, setData] = useState<ResponeProductGroup | undefined>();
@@ -19,6 +21,7 @@ const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
     total: data?.sales_by_productgroup?.length,
     showSizeChanger: true,
   });
+  const pathname = usePathname();
 
   const getData = async () => {
     setLoading(true);
@@ -36,6 +39,9 @@ const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
         message: err?.message,
       });
     }
+    setLoading(false);
+  };
+  useEffect(() => {
     setPaging({
       current: 1,
       pageSize: 10,
@@ -44,8 +50,7 @@ const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
       total: data?.sales_by_productgroup?.length,
       showSizeChanger: true,
     });
-    setLoading(false);
-  };
+  }, [data]);
 
   useEffect(() => {
     getData();
@@ -63,28 +68,9 @@ const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
     <Card>
       <Space style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
         <div style={{ fontSize: "20px", fontWeight: 600 }}>Sales By Product Group</div>
-        <Space style={{ display: "flex", fontSize: "20px" }} size={50}>
-          <Statistic
-            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Gross</div>}
-            value={data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
-            valueStyle={{ fontSize: "16px" }}
-          />
-          <Statistic
-            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Void</div>}
-            value={data?.total_void ? data?.total_void.toLocaleString("en-US", { style: "decimal" }) : "-"}
-            valueStyle={{ fontSize: "16px" }}
-          />
-          <Statistic
-            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Cancelled</div>}
-            value={data?.total_cancelled ? data?.total_cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
-            valueStyle={{ fontSize: "16px" }}
-          />
-          <Statistic
-            title={<div style={{ color: "black", fontSize: "16px", fontWeight: "600" }}>Total Net</div>}
-            value={data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
-            valueStyle={{ fontSize: "16px" }}
-          />
-        </Space>
+        <div style={{ fontSize: "16px", fontWeight: 600 }}>
+          Currency: {pathname === "/partner" ? Currency.RD : "USD"}
+        </div>
       </Space>
       {contextHolder}
       <Table
@@ -100,6 +86,33 @@ const ProductGroup: React.FC<ParamReportProps> = ({ params }) => {
           });
         }}
         loading={loading}
+        summary={() => {
+          return (
+            <Table.Summary fixed>
+              <Table.Summary.Row style={{ background: "#fafafa" }}>
+                <Table.Summary.Cell index={0}>
+                  <div style={{ fontWeight: 600 }}>Total</div>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>
+                  {data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>
+                  {data?.total_void ? data?.total_void.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={4}>
+                  {data?.total_cancelled ? data?.total_cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={5}>
+                  {data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+                <Table.Summary.Cell index={6}>
+                  {data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                </Table.Summary.Cell>
+              </Table.Summary.Row>
+            </Table.Summary>
+          );
+        }}
       />
     </Card>
   );

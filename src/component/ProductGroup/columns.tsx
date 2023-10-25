@@ -17,7 +17,7 @@ export const columns: ColumnsType<SalesByProductGroup> = [
     render: (date) => date,
   },
   {
-    title: "Group",
+    title: "Product Group",
     dataIndex: "product_groups",
     render: (group: SalesByProductGroupItem[]) => {
       return (
