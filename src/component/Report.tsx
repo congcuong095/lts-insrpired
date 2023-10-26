@@ -417,7 +417,7 @@ const Report: React.FC = () => {
               summary={() => {
                 return (
                   <Table.Summary fixed>
-                    <Table.Summary.Row style={{ color: "white", background: "#3aa3d9" }}>
+                    <Table.Summary.Row style={{ color: "white", background: "#3aa3d9", textAlign: 'right' }}>
                       <Table.Summary.Cell index={0}>
                         <div style={{ fontWeight: 600 }}>Total</div>
                       </Table.Summary.Cell>
