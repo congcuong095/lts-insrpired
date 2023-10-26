@@ -12,6 +12,7 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { getPdfCategory, getPdfCategoryAndProductGroup, getPdfProductGroup, getPdfSummary } from "@/services/report";
 import { AxiosError } from "axios";
 import quarterOfYear from "dayjs/plugin/quarterOfYear";
+import { usePathname } from "next/navigation";
 
 dayjs.extend(quarterOfYear);
 
@@ -37,6 +38,7 @@ const Report: React.FC = () => {
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [errorMessage, contextHolder] = notification.useNotification();
   const [selectDateFormat, setSelectDateFormat] = useState();
+  const pathname = usePathname();
 
   const onFilterDate = (dateString: [string, string] | string) => {
     const fromDate = dateString?.[0];
@@ -179,7 +181,7 @@ const Report: React.FC = () => {
         throw { message: "Wrong date format" };
       }
       let res;
-      const finalParam: IParamsReport = { ...formSearch?.date, is_pdf: true };
+      const finalParam: IParamsReport = { ...formSearch?.date, is_pdf: true, utype: pathname === "/partner" ? 2 : 1 };
       if (formSearch?.category_id) {
         finalParam.category_id = formSearch?.category_id;
       } else {
@@ -413,7 +415,7 @@ const Report: React.FC = () => {
                 <Select.Option value={2}>Supermarkets</Select.Option>
                 <Select.Option value={3}>Guest House</Select.Option>
                 <Select.Option value={4}>Coffee Shop</Select.Option>
-                <Select.Option value={5}>Mini Market'</Select.Option>
+                <Select.Option value={5}>Mini Market</Select.Option>
                 <Select.Option value={6}>Gas Station</Select.Option>
                 <Select.Option value={7}>Drug Store</Select.Option>
                 <Select.Option value={8}>Liquor Store</Select.Option>
