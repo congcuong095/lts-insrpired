@@ -23,14 +23,14 @@ const App: React.FC = () => (
       },
     }}
   >
-  <div
-    style={{
-      padding: "40px",
-    }}
-  >
-    <Report />
-  </div>
-    </ConfigProvider>
+    <div
+      style={{
+        padding: "40px",
+      }}
+    >
+      <Report />
+    </div>
+  </ConfigProvider>
 );
 
 export default App;
