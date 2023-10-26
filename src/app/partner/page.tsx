@@ -7,13 +7,18 @@ const App: React.FC = () => (
   <ConfigProvider
     theme={{
       token: {
-        // colorPrimary: '#d9d9d9',
+        colorPrimary: "#3aa3d9",
         borderRadius: 6,
         colorBorderSecondary: "#d9d9d9",
       },
       components: {
         Button: {
-          // colorPrimary: '#d9d9d9',
+          colorPrimary: "#3aa3d9",
+        },
+        Table: {
+          headerBg: "#3aa3d9",
+          headerColor: "white",
+          rowHoverBg: "#3aa3d91a",
         },
       },
     }}

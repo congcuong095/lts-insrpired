@@ -91,7 +91,7 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
         summary={() => {
           return (
             <Table.Summary fixed>
-              <Table.Summary.Row style={{ background: "#fafafa" }}>
+              <Table.Summary.Row style={{ color: "white", background: "#3aa3d9" }}>
                 <Table.Summary.Cell index={0}>
                   <div style={{ fontWeight: 600 }}>Total</div>
                 </Table.Summary.Cell>

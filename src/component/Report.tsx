@@ -67,54 +67,55 @@ const Report: React.FC = () => {
     }
   };
 
-  const handleSelectDate = (time: dayjs.Dayjs | null) => {
-    if (selectDateFormat && time) {
-      switch (selectDateFormat) {
-        case "day":
-          {
-            const stringTime = time.format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: stringTime, to_date: stringTime } };
-            });
-          }
-          break;
-        case "week":
-          {
-            const startTime = time.startOf("week").format("DD-MM-YYYY");
-            const endTime = time.endOf("week").format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: startTime, to_date: endTime } };
-            });
-          }
-          break;
-        case "month":
-          {
-            const startTime = time.startOf("month").format("DD-MM-YYYY");
-            const endTime = time.endOf("month").format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: startTime, to_date: endTime } };
-            });
-          }
-          break;
-        case "quarter":
-          {
-            const startTime = time.startOf("quarter").format("DD-MM-YYYY");
-            const endTime = time.endOf("quarter").format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: startTime, to_date: endTime } };
-            });
-          }
-          break;
-        case "year":
-          {
-            const startTime = time.startOf("year").format("DD-MM-YYYY");
-            const endTime = time.endOf("year").format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: startTime, to_date: endTime } };
-            });
-          }
-          break;
-      }
+  const handleSelectSpecialDay = (value: string | undefined) => {
+    switch (value) {
+      case "lastDay":
+        {
+          const startTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          setFormSearch((prev) => {
+            return { ...prev, date: { from_date: startTime, to_date: endTime } };
+          });
+        }
+        break;
+      case "last7Days":
+        {
+          const startTime = dayjs().subtract(7, "day").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          setFormSearch((prev) => {
+            return { ...prev, date: { from_date: startTime, to_date: endTime } };
+          });
+        }
+        break;
+      case "last30Days":
+        {
+          const startTime = dayjs().subtract(30, "day").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          setFormSearch((prev) => {
+            return { ...prev, date: { from_date: startTime, to_date: endTime } };
+          });
+        }
+        break;
+      case "last90Days":
+        {
+          const startTime = dayjs().subtract(90, "day").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          setFormSearch((prev) => {
+            return { ...prev, date: { from_date: startTime, to_date: endTime } };
+          });
+        }
+        break;
+      case "last365Days":
+        {
+          const startTime = dayjs().subtract(365, "day").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          setFormSearch((prev) => {
+            return { ...prev, date: { from_date: startTime, to_date: endTime } };
+          });
+        }
+        break;
+      default:
+        return;
     }
   };
 
@@ -138,40 +139,6 @@ const Report: React.FC = () => {
       }
       return result;
     });
-  };
-
-  const handleClickLast = (subtract: number) => {
-    if (selectDateFormat) {
-      switch (selectDateFormat) {
-        case "day":
-          {
-            const startTime = dayjs().subtract(subtract, "day").format("DD-MM-YYYY");
-            const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: startTime, to_date: endTime } };
-            });
-          }
-          break;
-        case "week":
-          {
-            const startTime = dayjs().subtract(subtract, "week").startOf("week").format("DD-MM-YYYY");
-            const endTime = dayjs().subtract(1, "week").endOf("week").format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: startTime, to_date: endTime } };
-            });
-          }
-          break;
-        case "month":
-          {
-            const startTime = dayjs().subtract(subtract, "month").startOf("month").format("DD-MM-YYYY");
-            const endTime = dayjs().subtract(1, "month").endOf("month").format("DD-MM-YYYY");
-            setFormSearch((prev) => {
-              return { ...prev, date: { from_date: startTime, to_date: endTime } };
-            });
-          }
-          break;
-      }
-    }
   };
 
   const handlePrint = async () => {
@@ -227,27 +194,10 @@ const Report: React.FC = () => {
     }
     setLoadingPdf(false);
   };
-  const formatDate = () => {
-    if (selectDateFormat) {
-      switch (selectDateFormat) {
-        case "day":
-          return "DD-MM-YYYY";
-        case "week":
-          return "wo-YYYY";
-        case "month":
-          return "MM-YYYY";
-        case "quarter":
-          return "[Q]Q-YYYY";
-        case "year":
-          return "YYYY";
-      }
-    }
-  };
 
   return (
     <div
       style={{
-        background: "white",
         padding: "5px",
       }}
     >
@@ -298,86 +248,46 @@ const Report: React.FC = () => {
                   marginBottom: "4px",
                 }}
               >
-                Date format:
+                Select Date:
               </div>
               <Select
                 value={selectDateFormat}
                 style={{ width: 400 }}
                 onChange={(value) => {
                   setSelectDateFormat(value);
-                  setFormSearch((prev) => {
-                    return { ...prev, date: undefined };
-                  });
+                  if (!value) {
+                    setFormSearch((prev) => {
+                      return { ...prev, date: undefined };
+                    });
+                  } else if (value === "range") {
+                    setFormSearch((prev) => {
+                      return { ...prev, date: undefined };
+                    });
+                  } else {
+                    handleSelectSpecialDay(value);
+                  }
                 }}
                 allowClear={true}
                 options={[
-                  { value: "range", label: "Date range" },
-                  { value: "day", label: "Day" },
-                  { value: "week", label: "Week" },
-                  { value: "month", label: "Month" },
-                  { value: "quarter", label: "Quarter" },
-                  { value: "year", label: "Year" },
+                  { value: "lastDay", label: "Last Day" },
+                  { value: "last7Days", label: "Last 7 Days" },
+                  { value: "last30Days", label: "Last 30 Days" },
+                  { value: "last90Days", label: "Last 90 Days" },
+                  { value: "last365Days", label: "Last 365 Days" },
+                  { value: "range", label: "Custom range" },
                 ]}
               />
             </div>
-            {selectDateFormat && (
-              <div>
-                <div
-                  style={{
-                    width: "100px",
-                    overflow: "hidden",
-                    fontWeight: "600",
-                    marginBottom: "4px",
-                  }}
-                >
-                  Select Date:
-                </div>
-                {selectDateFormat === "range" ? (
-                  <RangePicker
-                    style={{ width: 400 }}
-                    format={"DD-MM-YYYY"}
-                    value={[
-                      formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null,
-                      formSearch.date?.to_date ? dayjs(formSearch.date?.to_date, "DD-MM-YYYY") : null,
-                    ]}
-                    onChange={(_, dateString) => onFilterDate(dateString)}
-                  />
-                ) : (
-                  <>
-                    <DatePicker
-                      style={{ width: 400 }}
-                      onChange={(value, _) => {
-                        handleSelectDate(value);
-                      }}
-                      picker={selectDateFormat}
-                      format={formatDate()}
-                      value={formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null}
-                    />
-                    {(selectDateFormat === "day" || selectDateFormat === "week" || selectDateFormat === "month") && (
-                      <div>
-                        <Space size={"small"} style={{ marginTop: "10px" }}>
-                          <Button
-                            type="primary"
-                            size="small"
-                            onClick={(value) => {
-                              console.log(value);
-                              handleClickLast(1);
-                            }}
-                          >
-                            Last {selectDateFormat}
-                          </Button>
-                          <Button type="primary" size="small" onClick={() => handleClickLast(3)}>
-                            Last 3 {selectDateFormat}s
-                          </Button>
-                          <Button type="primary" size="small" onClick={() => handleClickLast(5)}>
-                            Last 5 {selectDateFormat}s
-                          </Button>
-                        </Space>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
+            {selectDateFormat === "range" && (
+              <RangePicker
+                style={{ width: 400 }}
+                format={"DD-MM-YYYY"}
+                value={[
+                  formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null,
+                  formSearch.date?.to_date ? dayjs(formSearch.date?.to_date, "DD-MM-YYYY") : null,
+                ]}
+                onChange={(_, dateString) => onFilterDate(dateString)}
+              />
             )}
           </Space>
 
@@ -499,27 +409,29 @@ const Report: React.FC = () => {
       </Card>
       <div>
         {selectedTable === "none" && (
-          <Table
-            rowKey={"id"}
-            columns={columns}
-            dataSource={[]}
-            bordered
-            summary={() => {
-              return (
-                <Table.Summary fixed>
-                  <Table.Summary.Row style={{ background: "#fafafa" }}>
-                    <Table.Summary.Cell index={0}>
-                      <div style={{ fontWeight: 600 }}>Total</div>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell index={2}>{"-"}</Table.Summary.Cell>
-                    <Table.Summary.Cell index={3}>{"-"}</Table.Summary.Cell>
-                    <Table.Summary.Cell index={4}>{"-"}</Table.Summary.Cell>
-                    <Table.Summary.Cell index={5}>{"-"}</Table.Summary.Cell>
-                  </Table.Summary.Row>
-                </Table.Summary>
-              );
-            }}
-          />
+          <Card>
+            <Table
+              rowKey={"id"}
+              columns={columns}
+              dataSource={[]}
+              bordered
+              summary={() => {
+                return (
+                  <Table.Summary fixed>
+                    <Table.Summary.Row style={{ color: "white", background: "#3aa3d9" }}>
+                      <Table.Summary.Cell index={0}>
+                        <div style={{ fontWeight: 600 }}>Total</div>
+                      </Table.Summary.Cell>
+                      <Table.Summary.Cell index={2}>{"-"}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={3}>{"-"}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={4}>{"-"}</Table.Summary.Cell>
+                      <Table.Summary.Cell index={5}>{"-"}</Table.Summary.Cell>
+                    </Table.Summary.Row>
+                  </Table.Summary>
+                );
+              }}
+            />
+          </Card>
         )}
         {selectedTable === "summary" && <Summary params={params} />}
         {selectedTable === "category" && <Category params={params} />}
