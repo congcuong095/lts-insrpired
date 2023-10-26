@@ -180,7 +180,27 @@ const Report: React.FC = () => {
 
         let a = document.createElement("a");
         let blobURL = URL.createObjectURL(file);
-        a.download = formSearch?.table + "-from-" + formSearch?.date?.from_date + "-to-" + formSearch?.date?.to_date;
+        switch (formSearch?.table) {
+          case "summary":
+            a.download = "sale_summary" + "_from_" + formSearch?.date?.from_date + "_to_" + formSearch?.date?.to_date;
+            break;
+          case "category":
+            a.download =
+              "sale_by_category" + "_from_" + formSearch?.date?.from_date + "_to_" + formSearch?.date?.to_date;
+            break;
+          case "productGroup":
+            a.download =
+              "sale_by_product_group" + "_from_" + formSearch?.date?.from_date + "_to_" + formSearch?.date?.to_date;
+            break;
+          case "categoryProductGroup":
+            a.download =
+              "sale_by_category_by_product_group" +
+              "_from_" +
+              formSearch?.date?.from_date +
+              "_to_" +
+              formSearch?.date?.to_date;
+            break;
+        }
         a.href = blobURL;
         document.body.appendChild(a);
         a.click();
@@ -417,7 +437,7 @@ const Report: React.FC = () => {
               summary={() => {
                 return (
                   <Table.Summary fixed>
-                    <Table.Summary.Row style={{ color: "white", background: "#3aa3d9", textAlign: 'right' }}>
+                    <Table.Summary.Row style={{ color: "white", background: "#3aa3d9", textAlign: "right" }}>
                       <Table.Summary.Cell index={0}>
                         <div style={{ fontWeight: 600 }}>Total</div>
                       </Table.Summary.Cell>
