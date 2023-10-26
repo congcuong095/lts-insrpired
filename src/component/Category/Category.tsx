@@ -29,7 +29,7 @@ const Category: React.FC<ParamReportProps> = ({ params }) => {
       if (!params?.from_date || !params?.to_date) {
         throw { message: "Wrong date format" };
       }
-      const res = await getCategory(params);
+      const res = await getCategory({ ...params, utype: pathname === "/partner" ? 2 : 1 });
       if (res?.data) {
         setData(res?.data);
       }

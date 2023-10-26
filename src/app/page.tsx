@@ -1,15 +1,25 @@
 "use client";
 import React from "react";
-import Report from "@/component/Report";
+import { Button, Card, Space } from "antd";
+import Link from "next/link";
 
 const App: React.FC = () => (
-  <div
+  <Card
     style={{
       padding: "40px",
+      display: "flex",
+      justifyContent: "center",
     }}
   >
-    <Report />
-  </div>
+    <Space size={"large"}>
+      <Link href={"/owner"}>
+        <Button size="large">Go to Owner</Button>
+      </Link>
+      <Link href={"/partner"}>
+        <Button size="large">Go to Parter</Button>
+      </Link>
+    </Space>
+  </Card>
 );
 
 export default App;

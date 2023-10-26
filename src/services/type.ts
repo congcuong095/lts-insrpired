@@ -4,6 +4,7 @@ export interface IParamsReport {
   is_pdf?: boolean;
   category_id?: number;
   product_group_id?: number;
+  utype?: number;
 }
 
 export interface ResponeSummary {

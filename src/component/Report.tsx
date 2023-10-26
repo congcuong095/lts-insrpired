@@ -138,6 +138,40 @@ const Report: React.FC = () => {
     });
   };
 
+  const handleClickLast = (subtract: number) => {
+    if (selectDateFormat) {
+      switch (selectDateFormat) {
+        case "day":
+          {
+            const startTime = dayjs().subtract(subtract, "day").format("DD-MM-YYYY");
+            const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: startTime, to_date: endTime } };
+            });
+          }
+          break;
+        case "week":
+          {
+            const startTime = dayjs().subtract(subtract, "week").startOf("week").format("DD-MM-YYYY");
+            const endTime = dayjs().subtract(1, "week").endOf("week").format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: startTime, to_date: endTime } };
+            });
+          }
+          break;
+        case "month":
+          {
+            const startTime = dayjs().subtract(subtract, "month").startOf("month").format("DD-MM-YYYY");
+            const endTime = dayjs().subtract(1, "month").endOf("month").format("DD-MM-YYYY");
+            setFormSearch((prev) => {
+              return { ...prev, date: { from_date: startTime, to_date: endTime } };
+            });
+          }
+          break;
+      }
+    }
+  };
+
   const handlePrint = async () => {
     setLoadingPdf(true);
     try {
@@ -307,15 +341,39 @@ const Report: React.FC = () => {
                     onChange={(_, dateString) => onFilterDate(dateString)}
                   />
                 ) : (
-                  <DatePicker
-                    style={{ width: 400 }}
-                    onChange={(value, _) => {
-                      handleSelectDate(value);
-                    }}
-                    picker={selectDateFormat}
-                    format={formatDate()}
-                    value={formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null}
-                  />
+                  <>
+                    <DatePicker
+                      style={{ width: 400 }}
+                      onChange={(value, _) => {
+                        handleSelectDate(value);
+                      }}
+                      picker={selectDateFormat}
+                      format={formatDate()}
+                      value={formSearch.date?.from_date ? dayjs(formSearch.date?.from_date, "DD-MM-YYYY") : null}
+                    />
+                    {(selectDateFormat === "day" || selectDateFormat === "week" || selectDateFormat === "month") && (
+                      <div>
+                        <Space size={"small"} style={{ marginTop: "10px" }}>
+                          <Button
+                            type="primary"
+                            size="small"
+                            onClick={(value) => {
+                              console.log(value);
+                              handleClickLast(1);
+                            }}
+                          >
+                            Last {selectDateFormat}
+                          </Button>
+                          <Button type="primary" size="small" onClick={() => handleClickLast(3)}>
+                            Last 3 {selectDateFormat}s
+                          </Button>
+                          <Button type="primary" size="small" onClick={() => handleClickLast(5)}>
+                            Last 5 {selectDateFormat}s
+                          </Button>
+                        </Space>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}

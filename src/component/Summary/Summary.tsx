@@ -30,7 +30,7 @@ const Summary: React.FC<ParamReportProps> = ({ params }) => {
       if (!params?.from_date || !params?.to_date) {
         throw { message: "Wrong date format" };
       }
-      const res = await getSummary(params);
+      const res = await getSummary({ ...params, utype: pathname === "/partner" ? 2 : 1 });
       if (res?.data) {
         setData(res?.data);
       }
