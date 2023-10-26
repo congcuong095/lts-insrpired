@@ -13,10 +13,10 @@ const App: React.FC = () => (
   >
     <Space size={"large"}>
       <Link href={"/owner"}>
-        <Button size="large">Go to Owner</Button>
+        <Button size="large">Login as Owner</Button>
       </Link>
       <Link href={"/partner"}>
-        <Button size="large">Go to Parter</Button>
+        <Button size="large">Login as Partner</Button>
       </Link>
     </Space>
   </Card>

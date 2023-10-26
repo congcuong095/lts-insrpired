@@ -69,7 +69,7 @@ const Report: React.FC = () => {
 
   const handleSelectSpecialDay = (value: string | undefined) => {
     switch (value) {
-      case "lastDay":
+      case "yesterday":
         {
           const startTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
           const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
@@ -78,37 +78,37 @@ const Report: React.FC = () => {
           });
         }
         break;
-      case "last7Days":
+      case "lastWeek":
         {
-          const startTime = dayjs().subtract(7, "day").format("DD-MM-YYYY");
-          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          const startTime = dayjs().subtract(1, "week").startOf("week").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "week").endOf("week").format("DD-MM-YYYY");
           setFormSearch((prev) => {
             return { ...prev, date: { from_date: startTime, to_date: endTime } };
           });
         }
         break;
-      case "last30Days":
+      case "lastMonth":
         {
-          const startTime = dayjs().subtract(30, "day").format("DD-MM-YYYY");
-          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          const startTime = dayjs().subtract(1, "month").startOf("month").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "month").endOf("week").format("DD-MM-YYYY");
           setFormSearch((prev) => {
             return { ...prev, date: { from_date: startTime, to_date: endTime } };
           });
         }
         break;
-      case "last90Days":
+      case "lastQuarter":
         {
-          const startTime = dayjs().subtract(90, "day").format("DD-MM-YYYY");
-          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          const startTime = dayjs().subtract(1, "quarter").startOf("quarter").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "quarter").endOf("quarter").format("DD-MM-YYYY");
           setFormSearch((prev) => {
             return { ...prev, date: { from_date: startTime, to_date: endTime } };
           });
         }
         break;
-      case "last365Days":
+      case "lastYear":
         {
-          const startTime = dayjs().subtract(365, "day").format("DD-MM-YYYY");
-          const endTime = dayjs().subtract(1, "day").format("DD-MM-YYYY");
+          const startTime = dayjs().subtract(1, "year").startOf("year").format("DD-MM-YYYY");
+          const endTime = dayjs().subtract(1, "year").endOf("year").format("DD-MM-YYYY");
           setFormSearch((prev) => {
             return { ...prev, date: { from_date: startTime, to_date: endTime } };
           });
@@ -217,7 +217,7 @@ const Report: React.FC = () => {
                 marginBottom: "4px",
               }}
             >
-              Select report:
+              <span style={{ color: "red" }}>* </span>Select report:
             </div>
             <Select
               value={formSearch?.table}
@@ -248,7 +248,7 @@ const Report: React.FC = () => {
                   marginBottom: "4px",
                 }}
               >
-                Select Date:
+                <span style={{ color: "red" }}>* </span>Select Date:
               </div>
               <Select
                 value={selectDateFormat}
@@ -269,12 +269,12 @@ const Report: React.FC = () => {
                 }}
                 allowClear={true}
                 options={[
-                  { value: "lastDay", label: "Last Day" },
-                  { value: "last7Days", label: "Last 7 Days" },
-                  { value: "last30Days", label: "Last 30 Days" },
-                  { value: "last90Days", label: "Last 90 Days" },
-                  { value: "last365Days", label: "Last 365 Days" },
-                  { value: "range", label: "Custom range" },
+                  { value: "yesterday", label: "Yesterday" },
+                  { value: "lastWeek", label: "Last Week" },
+                  { value: "lastMonth", label: "Last Month" },
+                  { value: "lastQuarter", label: "Last Quarter" },
+                  { value: "lastYear", label: "Last Year" },
+                  { value: "range", label: "Custom Range" },
                 ]}
               />
             </div>
@@ -331,7 +331,6 @@ const Report: React.FC = () => {
                 <Select.Option value={8}>Liquor Store</Select.Option>
                 <Select.Option value={9}>Service Office</Select.Option>
                 <Select.Option value={10}>Leidsa Office</Select.Option>
-                <Select.Option value={2000000}>Digital</Select.Option>
               </Select>
             </div>
           )}

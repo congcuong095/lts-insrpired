@@ -119,6 +119,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                         key={index}
                         style={{
                           ...styleCell,
+                          justifyContent: "flex-end",
                           borderBottom:
                             cate?.product_groups &&
                             index === cate?.product_groups?.length - 1 &&
@@ -128,7 +129,11 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                         }}
                       >
                         {product_groups?.gross
-                          ? product_groups?.gross.toLocaleString("en-US", { style: "decimal" })
+                          ? product_groups?.gross.toLocaleString("en-US", {
+                              style: "decimal",
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
                           : "-"}
                       </div>
                     );
@@ -139,6 +144,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Void",
@@ -160,6 +166,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                         key={index}
                         style={{
                           ...styleCell,
+                          justifyContent: "flex-end",
                           borderBottom:
                             cate?.product_groups &&
                             index === cate?.product_groups?.length - 1 &&
@@ -169,7 +176,11 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                         }}
                       >
                         {product_groups?.void
-                          ? product_groups?.void.toLocaleString("en-US", { style: "decimal" })
+                          ? product_groups?.void.toLocaleString("en-US", {
+                              style: "decimal",
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
                           : "-"}
                       </div>
                     );
@@ -180,6 +191,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Cancelled",
@@ -201,6 +213,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                         key={index}
                         style={{
                           ...styleCell,
+                          justifyContent: "flex-end",
                           borderBottom:
                             cate?.product_groups &&
                             index === cate?.product_groups?.length - 1 &&
@@ -210,7 +223,11 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                         }}
                       >
                         {product_groups?.cancelled
-                          ? product_groups?.cancelled.toLocaleString("en-US", { style: "decimal" })
+                          ? product_groups?.cancelled.toLocaleString("en-US", {
+                              style: "decimal",
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
                           : "-"}
                       </div>
                     );
@@ -221,6 +238,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Net",
@@ -242,6 +260,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                         key={index}
                         style={{
                           ...styleCell,
+                          justifyContent: "flex-end",
                           borderBottom:
                             cate?.product_groups &&
                             index === cate?.product_groups?.length - 1 &&
@@ -250,7 +269,13 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                               : styleCell.borderBottom,
                         }}
                       >
-                        {product_groups?.net ? product_groups?.net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                        {product_groups?.net
+                          ? product_groups?.net.toLocaleString("en-US", {
+                              style: "decimal",
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })
+                          : "-"}
                       </div>
                     );
                   })}
@@ -260,6 +285,7 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Category Net",
@@ -277,21 +303,33 @@ export const columns: ColumnsType<SalesByCategoryAndProductGroup> = [
                 key={indexCate}
                 style={{
                   ...styleCell,
+                  justifyContent: "flex-end",
                   borderBottom: indexCate === category.length - 1 ? "" : styleCell.borderBottom,
                   height: `${cate?.product_groups?.length ? `${cate?.product_groups?.length * 55}px` : "100%"}`,
                 }}
               >
-                {cate?.category_net ? cate?.category_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                {cate?.category_net
+                  ? cate?.category_net.toLocaleString("en-US", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "-"}
               </div>
             );
           })}
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Daily Net",
     dataIndex: "daily_net",
-    render: (daily_net) => (daily_net ? daily_net.toLocaleString("en-US", { style: "decimal" }) : "-"),
+    render: (daily_net) =>
+      daily_net
+        ? daily_net.toLocaleString("en-US", { style: "decimal", minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        : "-",
+    align: "right",
   },
 ];

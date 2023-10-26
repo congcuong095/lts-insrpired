@@ -90,7 +90,7 @@ const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
         summary={() => {
           return (
             <Table.Summary fixed>
-              <Table.Summary.Row style={{ color: "white", background: "#3aa3d9" }}>
+              <Table.Summary.Row style={{ color: "white", background: "#3aa3d9", textAlign: "right" }}>
                 <Table.Summary.Cell index={0}>
                   <div style={{ fontWeight: 600 }}>Total</div>
                 </Table.Summary.Cell>
@@ -98,32 +98,68 @@ const CategoryAndProduct: React.FC<ParamReportProps> = ({ params }) => {
                 <Table.Summary.Cell index={2}></Table.Summary.Cell>
                 <Table.Summary.Cell index={3}>
                   <div style={{ fontWeight: 600 }}>
-                    {data?.total_gross ? data?.total_gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                    {data?.total_gross
+                      ? data?.total_gross.toLocaleString("en-US", {
+                          style: "decimal",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "-"}
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={4}>
                   <div style={{ fontWeight: 600 }}>
-                    {data?.total_void ? data?.total_void.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                    {data?.total_void
+                      ? data?.total_void.toLocaleString("en-US", {
+                          style: "decimal",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "-"}
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={5}>
                   <div style={{ fontWeight: 600 }}>
-                    {data?.total_cancelled ? data?.total_cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                    {data?.total_cancelled
+                      ? data?.total_cancelled.toLocaleString("en-US", {
+                          style: "decimal",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "-"}
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={6}>
                   <div style={{ fontWeight: 600 }}>
-                    {data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                    {data?.total_net
+                      ? data?.total_net.toLocaleString("en-US", {
+                          style: "decimal",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "-"}
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={7}>
                   <div style={{ fontWeight: 600 }}>
-                    {data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                    {data?.total_net
+                      ? data?.total_net.toLocaleString("en-US", {
+                          style: "decimal",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "-"}
                   </div>
                 </Table.Summary.Cell>
                 <Table.Summary.Cell index={8}>
                   <div style={{ fontWeight: 600 }}>
-                    {data?.total_net ? data?.total_net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                    {data?.total_net
+                      ? data?.total_net.toLocaleString("en-US", {
+                          style: "decimal",
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : "-"}
                   </div>
                 </Table.Summary.Cell>
               </Table.Summary.Row>

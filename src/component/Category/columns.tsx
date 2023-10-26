@@ -58,13 +58,20 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.gross ? cate?.gross.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                {cate?.gross
+                  ? cate?.gross.toLocaleString("en-US", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "-"}
               </div>
             );
           })}
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Void",
@@ -83,13 +90,20 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.void ? cate?.void.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                {cate?.void
+                  ? cate?.void.toLocaleString("en-US", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "-"}
               </div>
             );
           })}
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Cancelled",
@@ -108,13 +122,20 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.cancelled ? cate?.cancelled.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                {cate?.cancelled
+                  ? cate?.cancelled.toLocaleString("en-US", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "-"}
               </div>
             );
           })}
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Net",
@@ -133,17 +154,26 @@ export const columns: ColumnsType<SalesByCategory> = [
                 key={index}
                 style={{ ...styleCell, borderBottom: index === category.length - 1 ? "" : styleCell.borderBottom }}
               >
-                {cate?.net ? cate?.net.toLocaleString("en-US", { style: "decimal" }) : "-"}
+                {cate?.net
+                  ? cate?.net.toLocaleString("en-US", {
+                      style: "decimal",
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "-"}
               </div>
             );
           })}
         </div>
       );
     },
+    align: "right",
   },
   {
     title: "Daily Net",
     dataIndex: "daily_net",
-    render: (net) => (net ? net.toLocaleString("en-US", { style: "decimal" }) : "-"),
+    render: (net) =>
+      net ? net.toLocaleString("en-US", { style: "decimal", minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "-",
+    align: "right",
   },
 ];
